@@ -1,0 +1,22 @@
+{
+  "name": "hao-login-backend",
+  "version": "1.0.0",
+  "description": "standard login page",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hao",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
+    "express": "^4.15.4",
+    "express-session": "^1.15.5",
+    "morgan": "^1.8.2",
+    "mysql": "^2.14.1",
+    "promise-mysql": "^3.0.2"
+  }
+}
