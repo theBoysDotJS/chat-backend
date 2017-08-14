@@ -16,9 +16,9 @@ CREATE TABLE user (
 
 CREATE TABLE userMeta(
   user_id INT,
+  avatar_url TEXT,
   key VARCHAR(80),
   value VARCHAR(255),
-
   FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
 
 )
@@ -41,6 +41,13 @@ created_at DATETIME NOT NULL,
 PRIMARY KEY (id),
 FOREIGN KEY (admin) REFERENCES user (id) ON DELETE CASCADE
 );
+
+CREATE TABLE conversionMeta(
+  conversation_id INT,
+  key VARCHAR(80),
+  value VARCHAR(255),
+  FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
+)
 
 CREATE TABLE message(
 id INT AUTO_INCREMENT,
