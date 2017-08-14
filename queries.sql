@@ -16,7 +16,6 @@ CREATE TABLE user (
 
 CREATE TABLE userMeta(
   user_id INT,
-  avatar_url TEXT,
   key VARCHAR(80),
   value VARCHAR(255),
   FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
