@@ -19,8 +19,7 @@ CREATE TABLE userMeta(
   key VARCHAR(80),
   value VARCHAR(255),
   FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
-
-)
+);
 
 CREATE TABLE session(
   id INT AUTO_INCREMENT,
@@ -46,7 +45,7 @@ CREATE TABLE conversionMeta(
   key VARCHAR(80),
   value VARCHAR(255),
   FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE message(
 id INT AUTO_INCREMENT,
