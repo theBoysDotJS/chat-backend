@@ -36,7 +36,7 @@ module.exports = (queryAPI) => {
 
 
   // Delete a session (logout)
-  authController.delete('/sessions', onlyLoggedIn, (req, res) => {
+  authController.delete('/session', onlyLoggedIn, (req, res) => {
     if (req.sessionToken === req.body.token) {
       queryAPI.deleteToken(req.body.token)
       .then(() => res.status(204).end())

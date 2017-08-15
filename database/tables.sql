@@ -55,6 +55,7 @@ CREATE TABLE conversionMeta (
 CREATE TABLE message (
 id INT AUTO_INCREMENT,
 author INT,
+message_body TEXT,
 created_at DATETIME NOT NULL,
 type ENUM ('image','link','audio','text'),
 conversation_id INT,
