@@ -24,7 +24,7 @@ const connection = mysql.createPool({
    database : 'chat_box',
 });
 
-let query = new Query(connection);
+let queryAPI = new Query(connection);
 
 // Create new express web server
 const app = express();
@@ -45,29 +45,15 @@ var server = app.listen(3000, function(){
 });
 
 
-
-app.get('/', function(req, res){
-   res.send("Hello world!");
-});
-
-//receive post request from front end api call and send response
-app.get('/signup', function(req, res){
-  res.send("signup page")
-});
-
-
-app.post('/signup', function(req, res){
-
- // parse data and create a new object
+// Create a new user (signup)
+app.post('/users', (req, res) => {
   let body = req.body;
-  //console.log("body",body)
   let user = {
-
     email: body.email,
     password: body.password,
     username: body.username
   };
-  query.createUser(user)
+  queryAPI.createUser(user)
   .then(function(data){
    console.log(data)
    res.send("success")
@@ -78,17 +64,40 @@ app.post('/signup', function(req, res){
   });
 });
 
+  // Create a new session(login)
+  // app.post('/sessions', (req,res) => {
+  //   queryAPI.createTokenFromCredentials(
+// 	//       req.body.email,
+// 	//       req.body.password
+// 	//     )
+// 	//     .then(token => {
+// 	// 		res.status(201).json({ token: token })
+// 	// 	})
+// 	//     .catch(err => res.status(401).json(err));
+//   });
+//
+// })
 
-app.get('/login', function (req, res){
-  res.send("login page")
-})
 
-
-app.post('/login', function (req,res){
-  res.send("post login!");
-})
-
-
+//
+// app.get('/login', function (req, res){
+//   res.send("login page")
+// })
+//
+//
+// app.get('/', function(req, res){
+//    res.send("Hello world!");
+// });
+//
+// //receive post request from front end api call and send response
+// app.get('/signup', function(req, res){
+//   res.send("signup page")
+// });
+//
+// app.get('/conversation', function(req, res){
+//
+// })
+//
 
 
 
