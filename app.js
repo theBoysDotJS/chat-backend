@@ -28,7 +28,6 @@ const connection = mysql.createPool({
 });
 const queryAPI = new Query(connection);
 
-
 // Controllers
 const authController = require('./controllers/auth.js');
 const conversationController = require('./controllers/conversation.js');
@@ -53,13 +52,19 @@ io.on('connection', (socket) => {
     console.log('made socket connection', socket.id);
     // Handle chat event
     socket.on('chat', function(data){
+        // 
         // get the chatroom ID
         // req.params.id for the URL
         // function to save data to database...
         // only recieve messages.
-        //
-
         // if statements to filter the data.
+        //functto inderds...()dataa
+        // {
+        //   text:
+        //   user:
+        //   conversation_id:
+        //   type:
+        // }
         console.log(data)
         translate(data.message, {to: 'fr'})
         .then( trans => {

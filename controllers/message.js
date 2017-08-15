@@ -5,13 +5,20 @@ module.exports = (queryAPI) => {
 
 
   // create a new message
-  messageController.post(``, (req, res) => {
+  messageController.post('/message', (req, res) => {
     console.log(req.body, 'createing a new message...')
     // queryAPI.
   })
   // edit a message
+  messageController.put('/message/:id', (req, res) => {
 
+  })
   // delete a message
+  messageController.delete('/message/:id', (req, res) => {
+
+  })
+
+
 
 
   return messageController;
