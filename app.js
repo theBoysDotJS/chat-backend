@@ -11,9 +11,12 @@ const socket = require('socket.io');
 // temp translate API
 const translate = require('google-translate-api');
 const io = socket(server);
+const checkLoginToken = require('./lib/check-login-token.js');
+// Create new express web server
+const app = express();
 
 
-// Require Query Class
+// Data Loader
 const Query = require('./lib/Query');
 
 // Create a connection to the DB
@@ -21,22 +24,20 @@ const connection = mysql.createPool({
    host     : 'localhost',
    user     : 'root',
    password : 'password',
-   database : 'chat_box',
+   database : 'chat_box'
 });
+const queryAPI = new Query(connection);
 
-let queryAPI = new Query(connection);
 
-// Create new express web server
-const app = express();
+// Controllers
+const authController = require('./controllers/auth.js');
 
 //Middleware
-// This middleware will log every request made to your web server on the console.
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-  // query.test().then(function(data){
-  //  console.log(data);
-  // });
-app.use(cors())
+app.use(cors());
+//app.use(checkLoginToken(queryAPI));
+app.use('/auth', authController(queryAPI));
 
 
 
@@ -45,24 +46,24 @@ var server = app.listen(3000, function(){
 });
 
 
-// Create a new user (signup)
-app.post('/users', (req, res) => {
-  let body = req.body;
-  let user = {
-    email: body.email,
-    password: body.password,
-    username: body.username
-  };
-  queryAPI.createUser(user)
-  .then(function(data){
-   console.log(data)
-   res.send("success")
-  })
-  .catch(err => {
-    console.log(err, "signup error")
-    res.send(err)
-  });
-});
+// // Create a new user (signup)
+// app.post('/users', (req, res) => {
+//   let body = req.body;
+//   let user = {
+//     email: body.email,
+//     password: body.password,
+//     username: body.username
+//   };
+//   queryAPI.createUser(user)
+//   .then(function(data){
+//    console.log(data)
+//    res.send("success")
+//   })
+//   .catch(err => {
+//     console.log(err, "signup error")
+//     res.send(err)
+//   });
+// });
 
   // Create a new session(login)
   // app.post('/sessions', (req,res) => {
