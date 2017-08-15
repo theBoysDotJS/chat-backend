@@ -60,7 +60,7 @@ app.post('/signup', function(req, res){
   };
   query.createUser(user)
   .then(function(data){
-   console.log(data)
+   //console.log(data)
    res.send("success")
   })
   .catch(err => {
@@ -78,4 +78,4 @@ app.post('/login', function (req,res){
   res.send("post login!");
 })
 
-app.listen(3000,console.log("listen to port 3000"));
+app.listen(4000,console.log("listen to port 4000"));

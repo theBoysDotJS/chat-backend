@@ -9,7 +9,7 @@ class Query {
      }
 
    createUser(user) {
-     console.log('this',this)
+     //console.log('this',this)
       let that=this
      //hash password
      return bcrypt.hash(user.password, saltRounds).
@@ -24,5 +24,7 @@ class Query {
      });
 
    }
+
+
 }
 module.exports = Query;
