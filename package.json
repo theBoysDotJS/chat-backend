@@ -15,8 +15,12 @@
     "cors": "^2.8.4",
     "express": "^4.15.4",
     "express-session": "^1.15.5",
+    "google-translate-api": "^2.3.0",
+    "knex": "^0.13.0",
     "morgan": "^1.8.2",
     "mysql": "^2.14.1",
-    "promise-mysql": "^3.0.2"
+    "promise-mysql": "^3.0.2",
+    "socket.io": "^2.0.3",
+    "validate.js": "^0.11.1"
   }
 }

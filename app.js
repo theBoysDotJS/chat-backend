@@ -2,39 +2,48 @@
 
 //import express library
 const express = require("express");
-const app = express();
 const bodyParser= require("body-parser");
 const morgan= require("morgan");
 const session= require("express-session");
-const Query = require('./Query');
 const mysql = require('promise-mysql');
 const cors = require('cors');
-//
+const socket = require('socket.io');
+// temp translate API
+const translate = require('google-translate-api');
+const io = socket(server);
 
-//basic setup for express server
-//https://www.tutorialspoint.com/expressjs/expressjs_hello_world.htm
 
-// parse incoming requests
+// Require Query Class
+const Query = require('./lib/Query');
+
+// Create a connection to the DB
+const connection = mysql.createPool({
+   host     : 'localhost',
+   user     : 'root',
+   password : 'password',
+   database : 'chat_box',
+});
+
+let query = new Query(connection);
+
+// Create new express web server
+const app = express();
+
+//Middleware
+// This middleware will log every request made to your web server on the console.
+app.use(morgan('dev'));
 app.use(bodyParser.json());
-
-
- // create a connection to the DB
-   const connection = mysql.createPool({
-       host     : 'localhost',
-       user     : 'root',
-       password : 'password',
-       database: 'chat_box',
-       connectionLimit: 10
-   });
-
-   // create a query object. we will use it to insert new data
-  let query = new Query(connection);
-
   // query.test().then(function(data){
   //  console.log(data);
   // });
-
 app.use(cors())
+
+
+
+var server = app.listen(3000, function(){
+    console.log('listening for requests on port 3000,');
+});
+
 
 
 app.get('/', function(req, res){
@@ -69,13 +78,42 @@ app.post('/signup', function(req, res){
   });
 });
 
-app.get(
-  '/login', function (req, res){
+
+app.get('/login', function (req, res){
   res.send("login page")
 })
+
 
 app.post('/login', function (req,res){
   res.send("post login!");
 })
 
-app.listen(3000,console.log("listen to port 3000"));
+
+
+
+
+// Socket.io logic
+
+// io.on('connection', (socket) => {
+//     console.log('made socket connection', socket.id);
+//
+//     // Handle chat event
+//     socket.on('chat', function(data){
+//         console.log(data)
+//         translate(data.message, {to: 'fr'})
+//         .then( trans => {
+//           data.message = trans.text;
+//           console.log(data, "this is the data")
+//           io.sockets.emit('chat', data);
+//         }
+//         )
+//         console.log(data)
+//         // console.log(data);
+//     });
+//
+//     // Handle typing event
+//     socket.on('typing', function(data){
+//         socket.broadcast.emit('typing', data);
+//     });
+//
+// });
