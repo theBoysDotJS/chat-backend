@@ -11,7 +11,7 @@ CREATE TABLE user (
   password VARCHAR(255) NOT NULL,
   firstName VARCHAR(60) NOT NULL,
   lastName VARCHAR(80) NOT NULL,
-  language VARCHAR(10),
+  language ENUM('en', 'fr', 'es', 'pt', 'de', 'it', 'hi', 'ar', 'ru'),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
