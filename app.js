@@ -37,8 +37,10 @@ const messageController = require('./controllers/message.js');
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cors());
-//app.use(checkLoginToken(queryAPI));
+app.use(checkLoginToken(queryAPI));
 app.use('/auth', authController(queryAPI));
+app.use('/message', messageController(queryAPI));
+app.use('/converation', conversationController(queryAPI));
 
 
 
@@ -48,39 +50,39 @@ var server = app.listen(3000, function(){
 
 // Socket.io logic
 
-io.on('connection', (socket) => {
-    console.log('made socket connection', socket.id);
-    // Handle chat event
-    socket.on('chat', function(data){
-        // 
-        // get the chatroom ID
-        // req.params.id for the URL
-        // function to save data to database...
-        // only recieve messages.
-        // if statements to filter the data.
-        //functto inderds...()dataa
-        // {
-        //   text:
-        //   user:
-        //   conversation_id:
-        //   type:
-        // }
-        console.log(data)
-        translate(data.message, {to: 'fr'})
-        .then( trans => {
-          data.message = trans.text;
-          console.log(data, "this is the data")
-          io.sockets.emit('chat', data);
-        }
-        )
-        console.log(data)
-        // console.log(data);
+// io.on('connection', (socket) => {
+//     console.log('made socket connection', socket.id);
+//     // Handle chat event
+//     socket.on('chat', function(data){
+//         //
+//         // get the chatroom ID
+//         // req.params.id for the URL
+//         // function to save data to database...
+//         // only recieve messages.
+//         // if statements to filter the data.
+//         //functto inderds...()dataa
+//         // {
+//         //   text:
+//         //   user:
+//         //   conversation_id:
+//         //   type:
+//         // }
+//         console.log(data)
+//         translate(data.message, {to: 'fr'})
+//         .then( trans => {
+//           data.message = trans.text;
+//           console.log(data, "this is the data")
+//           io.sockets.emit('chat', data);
+//         }
+//         )
+//         console.log(data)
+//         // console.log(data);
+//
+//     });
+//
+//     // Handle typing event
+//     socket.on('typing', function(data){
+//         socket.broadcast.emit('typing', data);
+//     });
 
-    });
-
-    // Handle typing event
-    socket.on('typing', function(data){
-        socket.broadcast.emit('typing', data);
-    });
-
-});
+// });
