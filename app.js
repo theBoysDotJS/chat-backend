@@ -31,6 +31,8 @@ const queryAPI = new Query(connection);
 
 // Controllers
 const authController = require('./controllers/auth.js');
+const messageController = require('./controllers/message.js');
+const conversationController = require('./controllers/conversation.js')
 
 //Middleware
 app.use(morgan('dev'));
@@ -38,7 +40,8 @@ app.use(bodyParser.json());
 app.use(cors());
 //app.use(checkLoginToken(queryAPI));
 app.use('/auth', authController(queryAPI));
-
+app.use('/message', messageController(queryAPI));
+app.use('/conversation', conversationController(queryAPI));
 
 
 var server = app.listen(3000, function(){

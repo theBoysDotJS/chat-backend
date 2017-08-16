@@ -1,20 +1,22 @@
 const express = require('express');
 
+const onlyLoggedIn = require('../lib/only-logged-in');
+
 module.exports = (queryAPI) => {
   const messageController = express.Router();
 
 
   // create a new message
-  messageController.post('/message', (req, res) => {
-    console.log(req.body, 'createing a new message...')
-    // queryAPI.
+  messageController.post('/create', (req, res) => {
+
+    //return queryAPI.createMessage()
   })
   // edit a message
-  messageController.put('/message/:id', (req, res) => {
+  messageController.put('/:id', (req, res) => {
 
   })
   // delete a message
-  messageController.delete('/message/:id', (req, res) => {
+  messageController.delete('/:id', (req, res) => {
 
   })
 
