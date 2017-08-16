@@ -8,23 +8,6 @@ module.exports = (queryAPI) => {
 
   // create a new message
   messageController.post('/create', (req, res) => {
-<<<<<<< HEAD
-
-    //return queryAPI.createMessage()
-  })
-  // edit a message
-  messageController.put('/:id', (req, res) => {
-
-  })
-  // delete a message
-  messageController.delete('/:id', (req, res) => {
-
-  })
-
-
-
-
-=======
     queryAPI.createMessage({
         author: req.body.author,
         message_body: req.body.message_body,
@@ -71,6 +54,6 @@ module.exports = (queryAPI) => {
       console.log(err.message, "the error message")
       res.status(400).send(err.message)});
   });
->>>>>>> sockets
+  
   return messageController;
 };
