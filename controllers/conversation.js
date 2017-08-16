@@ -33,10 +33,13 @@ module.exports = (queryAPI) => {
   })
 
   // remove a user from a conversation
-
   conversationController.put('/:id', (req, res) => {
 
   })
 
   return conversationController;
 };
+
+// INSERT INTO conversation ( name, admin )
+//   VALUES
+//      ( 'Zs chatroom', '9');
