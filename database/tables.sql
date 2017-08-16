@@ -60,7 +60,6 @@ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 type ENUM ('image','link','audio','text'),
 conversation_id INT,
 PRIMARY KEY (id),
-UNIQUE INDEX (conversation_id),
 FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
 FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
 );
@@ -68,8 +67,8 @@ FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
 CREATE TABLE conversationUser (
 user_id INT,
 conversation_id INT,
-joined_date DATETIME NOT NULL,
-date_left DATETIME NOT NULL,
+joined_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+date_left TIMESTAMP,
 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
 FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
 );

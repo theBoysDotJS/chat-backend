@@ -7,7 +7,7 @@ module.exports = (queryAPI) => {
 
 
   // create a new message
-  messageController.post('/create', (req, res) => {
+  messageController.post('/create', onlyLoggedIn, (req, res) => {
     queryAPI.createMessage({
         author: req.body.author,
         message_body: req.body.message_body,
@@ -18,7 +18,7 @@ module.exports = (queryAPI) => {
       .catch(err => res.status(400).json(err))
   })
   // edit a message
-  messageController.put('/:id', (req, res) => {
+  messageController.put('/:id', onlyLoggedIn, (req, res) => {
     console.log("about to run put function");
     console.log(req.body)
     queryAPI.messageBelongsToUser(req.params.id, req.user.user_id)
@@ -36,7 +36,7 @@ module.exports = (queryAPI) => {
 
 
   // delete a message, add onlyLoggedIn middleware
-  messageController.delete('/:id', (req, res) => {
+  messageController.delete('/:id', onlyLoggedIn, (req, res) => {
     // in practice do not delete data. mark as deleted..
     console.log("about to run the delete function for message")
     //console.log("request body:", req.params)
@@ -54,6 +54,5 @@ module.exports = (queryAPI) => {
       console.log(err.message, "the error message")
       res.status(400).send(err.message)});
   });
-  
   return messageController;
 };
