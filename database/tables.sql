@@ -40,7 +40,7 @@ CREATE TABLE conversation (
 id INT AUTO_INCREMENT,
 name VARCHAR(80) NOT NULL,
 admin INT,
-created_at DATETIME NOT NULL,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (id),
 FOREIGN KEY (admin) REFERENCES user (id) ON DELETE CASCADE
 );
@@ -55,7 +55,8 @@ CREATE TABLE conversionMeta (
 CREATE TABLE message (
 id INT AUTO_INCREMENT,
 author INT,
-created_at DATETIME NOT NULL,
+message_body TEXT,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 type ENUM ('image','link','audio','text'),
 conversation_id INT,
 PRIMARY KEY (id),

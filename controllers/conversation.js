@@ -19,7 +19,11 @@ module.exports = (queryAPI) => {
 
   // get all conversations
   conversationController.get('/', (req, res) => {
+<<<<<<< HEAD
     res.send("hello")
+=======
+
+>>>>>>> sockets
   })
 
   // get a single conversations
@@ -33,9 +37,20 @@ module.exports = (queryAPI) => {
   })
 
   // remove a user from a conversation
+<<<<<<< HEAD
   conversationController.patch('/:id', (req, res) => {
+=======
+  conversationController.put('/:id', (req, res) => {
+>>>>>>> sockets
 
   })
 
   return conversationController;
 };
+<<<<<<< HEAD
+=======
+
+// INSERT INTO conversation ( name, admin )
+//   VALUES
+//      ( 'Zs chatroom', '9');
+>>>>>>> sockets
