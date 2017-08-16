@@ -10,7 +10,7 @@ const cors = require('cors');
 const socket = require('socket.io');
 // temp translate API
 const translate = require('google-translate-api');
-const io = socket(server);
+
 const checkLoginToken = require('./lib/check-login-token.js');
 // Create new express web server
 const app = express();
@@ -31,6 +31,8 @@ const queryAPI = new Query(connection);
 
 // Controllers
 const authController = require('./controllers/auth.js');
+const conversationController = require('./controllers/conversation.js');
+
 
 //Middleware
 app.use(morgan('dev'));
@@ -38,92 +40,32 @@ app.use(bodyParser.json());
 app.use(cors());
 //app.use(checkLoginToken(queryAPI));
 app.use('/auth', authController(queryAPI));
+app.use('/conversation', conversationController(queryAPI));
 
+app.get('/', function (req, res){
+  res.sendFile(__dirname + '/index.html');
+})
 
 
 var server = app.listen(3000, function(){
-    console.log('listening for requests on port 3000,');
+    //console.log('listening for requests on port 3000,');
 });
 
+const io = socket(server);
 
-// // Create a new user (signup)
-// app.post('/users', (req, res) => {
-//   let body = req.body;
-//   let user = {
-//     email: body.email,
-//     password: body.password,
-//     username: body.username
-//   };
-//   queryAPI.createUser(user)
-//   .then(function(data){
-//    console.log(data)
-//    res.send("success")
-//   })
-//   .catch(err => {
-//     console.log(err, "signup error")
-//     res.send(err)
-//   });
-// });
+io.on('connection', function(socket){
+  //console.log('a user connected');
 
-  // Create a new session(login)
-  // app.post('/sessions', (req,res) => {
-  //   queryAPI.createTokenFromCredentials(
-// 	//       req.body.email,
-// 	//       req.body.password
-// 	//     )
-// 	//     .then(token => {
-// 	// 		res.status(201).json({ token: token })
-// 	// 	})
-// 	//     .catch(err => res.status(401).json(err));
-//   });
-//
-// })
+  socket.on('disconnect', function(){
+    //console.log('user disconnected');
 
+  });
+  socket.on('chat message', function(msg){
+   
+    //console.log('message: ' + msg);
+    io.emit('chat message', msg);
+  });
 
-//
-// app.get('/login', function (req, res){
-//   res.send("login page")
-// })
-//
-//
-// app.get('/', function(req, res){
-//    res.send("Hello world!");
-// });
-//
-// //receive post request from front end api call and send response
-// app.get('/signup', function(req, res){
-//   res.send("signup page")
-// });
-//
-// app.get('/conversation', function(req, res){
-//
-// })
-//
+  
+});
 
-
-
-// Socket.io logic
-
-// io.on('connection', (socket) => {
-//     console.log('made socket connection', socket.id);
-//
-//     // Handle chat event
-//     socket.on('chat', function(data){
-//         console.log(data)
-//         translate(data.message, {to: 'fr'})
-//         .then( trans => {
-//           data.message = trans.text;
-//           console.log(data, "this is the data")
-//           io.sockets.emit('chat', data);
-//         }
-//         )
-//         console.log(data)
-//         // console.log(data);
-//     });
-//
-//     // Handle typing event
-//     socket.on('typing', function(data){
-//         socket.broadcast.emit('typing', data);
-//     });
-//
-// });
