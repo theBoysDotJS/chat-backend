@@ -1,12 +1,21 @@
 const express = require('express');
 
+const onlyLoggedIn = require('../lib/only-logged-in');
+
 module.exports = (queryAPI) => {
   const conversationController = express.Router();
 
   // new conversation
-  conversationController.post('/:id', (req, res) => {
-
+  conversationController.post('/create', onlyLoggedIn, (req, res) => {
+    console.log("we are in the conversation controller.. ")
+    queryAPI.createNewConversation({
+        name: req.body.name,
+        admin: req.body.admin
+    })
+    .then(result => res.status(201).json(result))
+    .catch(err => res.status(400).json(err.message));
   })
+
   // update a conversation
   conversationController.put('/:id', (req, res) => {
 

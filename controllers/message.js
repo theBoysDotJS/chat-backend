@@ -37,10 +37,7 @@ module.exports = (queryAPI) => {
 
   // delete a message, add onlyLoggedIn middleware
   messageController.delete('/:id', onlyLoggedIn, (req, res) => {
-    // in practice do not delete data. mark as deleted..
     console.log("about to run the delete function for message")
-    //console.log("request body:", req.params)
-    //console.log("request user object", req.user)
     queryAPI.messageBelongsToUser(req.params.id, req.user.user_id)
     .then((result) => {
       console.log("line 40, passed", result)
