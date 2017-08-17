@@ -7,7 +7,7 @@ const onlyLoggedIn = require('../lib/only-logged-in');
 module.exports = (queryAPI) => {
   const conversationController = express.Router();
 
- 
+
   conversationController.post('/create', onlyLoggedIn, (req, res) => {
     console.log("we are in the conversation controller.. ")
     queryAPI.createNewConversation({
@@ -49,19 +49,61 @@ module.exports = (queryAPI) => {
       queryAPI.getSingleConversation(req.params.id)
       .then(conversation => {
           conversationObj = {...conversation[0]};
-          queryAPI.getSingleConversationUser(req.params.id)
-          .then(users=> {
-              conversationObj['users'] = users;
-              queryAPI.getSingleConversationMessages(req.params.id)
-              .then(messages=>{
-                  conversationObj['messages'] = messages;
-                  res.status(201).json(conversationObj)
-              })
-          })
-      })
+          return (queryAPI.getSingleConversationUser(req.params.id))
+        })
+        .then(users => {
+          conversationObj['users'] = users;
+          return(queryAPI.getSingleConversationMessages(req.params.id))
+        })
+        .then(messages => {
+          conversationObj['messages'] = messages;
+          res.status(201).json(conversationObj)
+        })
       .catch(err => res.status(400).json(err));
   })
 
+
+
+  // get a ALL conversations
+  conversationController.get('/', onlyLoggedIn, (req, res) => {
+
+      var conversationArray = [];
+
+      queryAPI.getAllConversations(req.user.user_id)
+      .then(conversations => {
+          var stuff = [];
+          conversations.forEach(convo => {
+            conversationArray.push(convo);
+            stuff.push(queryAPI.getSingleConversationUser(convo.id))
+          })
+          return Promise.all(stuff)
+        })
+        .then(users=>{
+          conversationArray.map((convo, index) => {
+            convo['users'] = users[index];
+            return convo;
+          })
+
+          var stuff = [];
+          conversationArray.forEach(convo => {
+            stuff.push(queryAPI.getSingleConversationMessages(convo.id, 2))
+          })
+          return Promise.all(stuff)
+
+        })
+        .then(messages=> {
+          conversationArray.map((convo, index) => {
+            convo['messages'] = messages[index];
+            return convo;
+          })
+
+          console.log(conversationArray, "aaaaaaa");
+          res.status(201).json(conversationArray);
+
+        })
+
+      .catch(err => res.status(400).json(err.message));
+  })
 
   // add a user/ join a conversation
   conversationController.post('/:id/join', onlyLoggedIn, (req, res) => {
@@ -74,7 +116,7 @@ module.exports = (queryAPI) => {
   })
 
   // remove a user from a conversation
-  conversationController.put('/:id/leave', (req, res) => {
+  conversationController.put('/:id/leave', onlyLoggedIn, (req, res) => {
     queryAPI.removeAllUserFromConversation(
         req.params.id,
         req.body.users
@@ -86,4 +128,3 @@ module.exports = (queryAPI) => {
 
   return conversationController;
 };
-
