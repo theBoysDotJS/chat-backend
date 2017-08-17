@@ -28,18 +28,19 @@ const connection = mysql.createPool({
 });
 const queryAPI = new Query(connection);
 
-
 // Controllers
 const authController = require('./controllers/auth.js');
 const conversationController = require('./controllers/conversation.js');
+const messageController = require('./controllers/message.js');
 
 
 //Middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cors());
-//app.use(checkLoginToken(queryAPI));
+app.use(checkLoginToken(queryAPI));
 app.use('/auth', authController(queryAPI));
+app.use('/message', messageController(queryAPI));
 app.use('/conversation', conversationController(queryAPI));
 
 app.get('/', function (req, res){
@@ -49,23 +50,5 @@ app.get('/', function (req, res){
 
 var server = app.listen(3000, function(){
     //console.log('listening for requests on port 3000,');
-});
-
-const io = socket(server);
-
-io.on('connection', function(socket){
-  //console.log('a user connected');
-
-  socket.on('disconnect', function(){
-    //console.log('user disconnected');
-
-  });
-  socket.on('chat message', function(msg){
-   
-    //console.log('message: ' + msg);
-    io.emit('chat message', msg);
-  });
-
-  
 });
 

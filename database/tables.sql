@@ -11,7 +11,7 @@ CREATE TABLE user (
   password VARCHAR(255) NOT NULL,
   firstName VARCHAR(60) NOT NULL,
   lastName VARCHAR(80) NOT NULL,
-  language VARCHAR(10),
+  language ENUM('en', 'fr', 'es', 'pt', 'de', 'it', 'hi', 'ar', 'ru'),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -53,15 +53,15 @@ CREATE TABLE conversionMeta (
 );
 
 CREATE TABLE message (
-  id INT AUTO_INCREMENT,
-  author INT,
-  message_body TEXT,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  type ENUM ('image','link','audio','text'),
-  conversation_id INT,
-  PRIMARY KEY (id),
-  FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
-  FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
+id INT AUTO_INCREMENT,
+author INT,
+message_body TEXT,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+type ENUM ('image','link','audio','text'),
+conversation_id INT,
+PRIMARY KEY (id),
+FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
+FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
 );
 
 CREATE TABLE conversationUser (
