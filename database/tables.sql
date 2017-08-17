@@ -11,7 +11,7 @@ CREATE TABLE user (
   password VARCHAR(255) NOT NULL,
   firstName VARCHAR(60) NOT NULL,
   lastName VARCHAR(80) NOT NULL,
-  language VARCHAR(10),
+  language ENUM('en', 'fr', 'es', 'pt', 'de', 'it', 'hi', 'ar', 'ru'),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -40,7 +40,7 @@ CREATE TABLE conversation (
 id INT AUTO_INCREMENT,
 name VARCHAR(80) NOT NULL,
 admin INT,
-created_at DATETIME NOT NULL,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (id),
 FOREIGN KEY (admin) REFERENCES user (id) ON DELETE CASCADE
 );
@@ -56,11 +56,10 @@ CREATE TABLE message (
 id INT AUTO_INCREMENT,
 author INT,
 message_body TEXT,
-created_at DATETIME NOT NULL,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 type ENUM ('image','link','audio','text'),
 conversation_id INT,
 PRIMARY KEY (id),
-UNIQUE INDEX (conversation_id),
 FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
 FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
 );
@@ -68,8 +67,8 @@ FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
 CREATE TABLE conversationUser (
 user_id INT,
 conversation_id INT,
-joined_date DATETIME NOT NULL,
-date_left DATETIME NOT NULL,
+joined_date DATETIME NOT NULL DEFAULT NOW(),
+date_left DATETIME,
 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
 FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
 );

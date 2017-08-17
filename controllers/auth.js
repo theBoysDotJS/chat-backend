@@ -7,7 +7,7 @@ module.exports = (queryAPI) => {
 
   // Create a new user (signup)
   authController.post('/user', (req, res) => {
-	console.log(req.body, 'body in auth user')
+	 //console.log(req.body, 'body in auth user')
     queryAPI.createUser({
       email: req.body.email,
       username: req.body.username,

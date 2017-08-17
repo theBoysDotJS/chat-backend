@@ -12,7 +12,6 @@ const http = require('http').createServer(app)
 const io = require('socket.io')(http);
 // temp translate API
 const translate = require('google-translate-api');
-// const io = socket(server);
 const checkLoginToken = require('./lib/check-login-token.js');
 // Create new express web server
 
@@ -31,18 +30,17 @@ const connection = mysql.createPool({
 });
 const queryAPI = new Query(connection);
 
-
 // Controllers
 const authController = require('./controllers/auth.js');
 const conversationController = require('./controllers/conversation.js');
 const messageController = require('./controllers/message.js');
 
+
 //Middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-// app.use(cors());
-//app.use(checkLoginToken(queryAPI));
-app.use('/auth', authController(queryAPI));
+
+// CORS configuration
 app.use(function (req, res, next) {
         res.setHeader('Access-Control-Allow-Origin', "http://localhost:3001");
         res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -53,10 +51,19 @@ app.use(function (req, res, next) {
     }
 );
 
+app.use(checkLoginToken(queryAPI));
+app.use('/auth', authController(queryAPI));
+app.use('/message', messageController(queryAPI));
+app.use('/conversation', conversationController(queryAPI));
+
+app.get('/', function (req, res){
+  res.sendFile(__dirname + '/index.html');
+})
 
 
- http.listen(8080, function(){
-    console.log('listening for requests on port 8080,');
+ let port = 3000;
+ http.listen(port, function(){
+    console.log(`listening for requests on port ${port}`);
 });
 
 // Socket.io logic
@@ -91,3 +98,4 @@ io.on('connection', (socket) => {
     });
 
 });
+
