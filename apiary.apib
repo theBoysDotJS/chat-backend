@@ -43,9 +43,17 @@ Requesting this endpoint with an Authorization token will return the user that t
     + Attributes (UserWithId)
 
 
-## Conversation [/conversation]
+## Dashboard [/conversation]
 
-### Create a new conversation [POST]
+### Get all conversations [GET /conversation/]
+
++ Request 200 (application/json)
+    + Attributes(Session)
+
++ Response 201 (application/json)
+    + Attributes (AllConversations)
+
+### Create a new conversation [POST /conversation/{id}]
 
 + Request (application/json)
     + Attributes (ConversationPost)
@@ -145,6 +153,10 @@ Requesting this endpoint with an Authorization token will return the user that t
 - avatarUrl: `https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50` (string) - The profile pic of the user
 - Include Timestamps
 
+## UserWithIdnoTimeorUser (object)
+- id: `123` (number) - The unique ID of the user
+- avatarUrl: `https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50` (string) - The profile pic of the user
+
 ## Session (object)
 - token: `uep52qo8wfyh97b24fjafjewi9bb0r24` (string) - The session token
 
@@ -152,8 +164,16 @@ Requesting this endpoint with an Authorization token will return the user that t
 - id: `9999` (number) The ID of the Conversation
 - name: `The Chatroom` (string) The name of the conversation
 - admin: `123` (number) The Administrator of the Chatroom
-- users: `[ UserWithID ]` (array) Users part of the conversation
+- users:
+    + Include UserWithId
 - Include Timestamps
+
+##AllConversations (object)
+- conversations:
+    + conversation1:
+        + Include Conversation
+    + conversation2:
+        + Include Conversation
 
 ##ConversationIdentify (object)
 - id: `44444` (number) The ID of the Conversation
