@@ -36,17 +36,13 @@ module.exports = (queryAPI) => {
         .catch(err => res.status(400).json(err));
   })
 
-  // get all conversations
-  conversationController.get('/', (req, res) => {
 
-  })
 
   // get a single conversation
   conversationController.get('/:id', (req, res) => {
       var conversationObj = {
         messages : [],
-        users: [],
-        crap: "Haha"
+        users: []
       };
       queryAPI.getSingleConversation(req.params.id)
       .then(conversation => {
