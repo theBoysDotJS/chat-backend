@@ -17,13 +17,23 @@ module.exports = (queryAPI) => {
   })
 
   // update a conversation
-  conversationController.put('/:id', (req, res) => {
-
-  })
+    conversationController.put('/:id', onlyLoggedIn, (req, res) => {
+      queryAPI.updateConversation(
+          req.params.id,
+          {
+              name: req.body.name,
+              admin: req.body.admin
+          })
+      .then(conversation => res.status(201).json(conversation))
+      .catch(err => res.status(400).json(err));
+    })
 
   // delete a conversation
-  conversationController.delete('/:id', (req, res) => {
-
+  conversationController.delete('/:id', onlyLoggedIn, (req, res) => {
+        console.log("deleting a conversation... ")
+        queryAPI.deleteConversation(req.params.id)
+        .then(data => res.status(201).json(data))
+        .catch(err => res.status(400).json(err));
   })
 
   // get all conversations
