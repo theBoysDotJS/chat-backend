@@ -1,0 +1,175 @@
+FORMAT: 1A
+
+# Translation Messenger
+This app facilitates the conversation between two people who don't speak the same langauge
+
+## Authentication [/auth]
+
+### Create a new user (signup) [POST /auth/users]
++ Request (application/json)
+    + Attributes (AuthData)
+
++ Response 201 (application/json)
+    + Attributes (UserWithId)
+
+
+### Create a new session (login) [POST /auth/sessions]
++ Request (application/json)
+    + Attributes (AuthData)
+
++ Response 201 (application/json)
+    + Attributes (Session)
+
+
+### Delete a session (logout) [DELETE /auth/sessions]
+Requesting this endpoint will delete the session associated with the token in the `Authorization` header.
++ Request (application/json)
+    + Headers
+
+            Authorization: token xyz
+
++ Response 204
+
+
+### Retrieve current user [GET /auth/me]
+Requesting this endpoint with an Authorization token will return the user that this token belongs to.
+
++ Request
+    + Headers
+
+            Authorization: token xyz
+
++ Response 200 (application/json)
+    + Attributes (UserWithId)
+
+
+## Conversation [/conversation]
+
+### Create a new conversation [POST]
+
++ Request (application/json)
+    + Attributes (ConversationPost)
+
++ Response 201 (application/json)
+    + Attributes (Conversation)
+
+
+### Join a Conversation [GET /conversation/{id}]
+
++ Parameters 200
+    + id (number) The ID of the conversation
+
++ Response 201 (application/json)
+    + Attributes (Conversation)
+
+### Delete a conversation [DELETE /conversation/{id}]
+
++ Parameters 200
+    + id (number) The ID of the conversation
+
++ Response 201 (application/json)
+
+    + Schema
+
+            {
+                true
+            }
+
+
+### Leave a conversation [PATCH]
+
++ Request (application/json)
+    + Attributes (ConversationIdentify)
+
++ Response 201 (application/json)
+
+    + Schema
+
+            {
+                true
+            }
+
+
+## Messaging [/message]
+
+### Write a message in a conversation [POST]
+
++ Request (application/json)
+    + Attributes (Message)
+
++ Response 201 (application/json)
+    + Attributes (MessageWithID)
+
+
+### Delete a message in a conversation [DELETE /message/:id]
+
++ Parameters 200
+    + id (number) The ID of the Message
+
++ Response 201 (application/json)
+
+    + Schema
+
+            {
+                true
+            }
+
+### Edit a message in a conversation [PUT /message/:id]
+
++ Request (application/json)
+    + Attributes (MessageWithID)
+
++ Response 201 (application/json)
+    + Attributes (MessageWithID)
+
+
+
+
+# Data Structures
+
+## Timestamps (object)
+- createdAt: `2015-01-20T09:48:32.066Z` (string) - The creation date
+- updatedAt: `2017-05-04T14:29:42.490Z` (string) - The last update date
+
+## AuthData (object)
+- email: `test@test.com` (string) - The email that will be used as a login username
+- password: `12341234` (string) - The desired password for the new user
+
+## User (object)
+- username: `username` (string) The username of the User
+- email: `test@test.com` (string) - The email of the user
+
+## UserWithId (object)
+- id: `123` (number) - The unique ID of the user
+- Include User
+- avatarUrl: `https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50` (string) - The profile pic of the user
+- Include Timestamps
+
+## Session (object)
+- token: `uep52qo8wfyh97b24fjafjewi9bb0r24` (string) - The session token
+
+##Conversation (object)
+- id: `9999` (number) The ID of the Conversation
+- name: `The Chatroom` (string) The name of the conversation
+- admin: `123` (number) The Administrator of the Chatroom
+- users: `[ UserWithID ]` (array) Users part of the conversation
+- Include Timestamps
+
+##ConversationIdentify (object)
+- id: `44444` (number) The ID of the Conversation
+- user_id: `123` (number) The ID of the User joining the conversation
+
+##ConversationPost (object)
+- name: `The Chatroom` (string) The name of the conversation
+- admin: `123` (number) user id of the user creating the conversation
+
+##Message (object)
+- author: `123` (number) The User ID Author of the message
+- type: `text` (string) The type of data
+- message: `message body........` (string) The message body
+
+##MessageWithID (object)
+- id: `1234` (number) The id of the Message
+- author: `123` (number) The User ID Author of the message
+- type: `text` (string) The type of data
+- message: `message body........` (string) The message body
