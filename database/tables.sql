@@ -12,6 +12,7 @@ CREATE TABLE user (
   firstName VARCHAR(60) NOT NULL,
   lastName VARCHAR(80) NOT NULL,
   language ENUM('en', 'fr', 'es', 'pt', 'de', 'it', 'hi', 'ar', 'ru'),
+  avatarUrl: VARCHAR(100),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
