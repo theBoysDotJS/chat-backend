@@ -1,11 +1,13 @@
 const express = require('express');
 
+
 const onlyLoggedIn = require('../lib/only-logged-in');
+
 
 module.exports = (queryAPI) => {
   const conversationController = express.Router();
 
-  // new conversation
+ 
   conversationController.post('/create', onlyLoggedIn, (req, res) => {
     console.log("we are in the conversation controller.. ")
     queryAPI.createNewConversation({
@@ -85,5 +87,3 @@ module.exports = (queryAPI) => {
   return conversationController;
 };
 
-// INSERT INTO conversation ( name, admin ) VALUES ( 'As chatroom', '1');
-// INSERT INTO message (author, message_body, type, conversation_id) VALUES (2, 'this is b here', 'text', '1');

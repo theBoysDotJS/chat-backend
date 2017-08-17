@@ -67,7 +67,7 @@ FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
 CREATE TABLE conversationUser (
 user_id INT,
 conversation_id INT,
-joined_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+joined_date DATETIME NOT NULL DEFAULT NOW(),
 date_left DATETIME,
 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
 FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
