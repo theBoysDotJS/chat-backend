@@ -46,7 +46,7 @@ module.exports = (queryAPI) => {
 
     })
 
-        // remove a user from a conversation
+    // remove a user from a conversation
     conversationController.patch('/:id/leave', (req, res) => {
         queryAPI.removeAllUserFromConversation(  
             req.params.id,
@@ -55,38 +55,47 @@ module.exports = (queryAPI) => {
         .then(success => res.status(201).json(success))
         .catch(err => res.status(400).json(false));
     })
+
   
-
-
-
     // get a single conversations
-    conversationController.get('/:id', (req, res) => {
-        
-        var conversationObj;
-        queryAPI.getSingleConversation(req.params.id)
+    function getAsingleConversation(convoId) {
+        let conversationObj = {};
+        return queryAPI.getSingleConversation(convoId)
         .then(conversation => {
-            conversationObj = conversation;
-            queryAPI.getSingleConversationUser(req.params.id)
+            const conversationRow = conversation[0];
+            conversationObj["id"] = conversationRow.id;
+            conversationObj["name"] = conversationRow.name;
+            conversationObj["admin"] = conversationRow.admin;
+            conversationObj["created_at"] = conversationRow.created_at;
+
+            return queryAPI.getSingleConversationUser(convoId)
             .then(users=> {
                 conversationObj['users'] = users;
-                queryAPI.getSingleConversationMessages(req.params.id)
+                return queryAPI.getSingleConversationMessages(convoId)
                 .then(messages=>{
                     conversationObj['messages'] = messages;
-                    res.status(201).json(conversationObj)
-              
+                    return conversationObj;
                 })
             })
+        })
+        .catch((error) => {
+            throw error;
+        });
+    }
+
+
+    conversationController.get('/:id', (req, res) => {
+        getAsingleConversation(req.params.id)
+        .then(conversationObj => {
+            res.status(201).json(conversationObj)
         })
         .catch(err => res.status(400).json(err));
     })
 
-  // get all conversations
-  conversationController.get('/', (req, res) => {
+    // get all conversations
+    conversationController.get('/', (req, res) => {
+                
+    })
     
-       
-        
-      })
-    
-
   return conversationController;
 };

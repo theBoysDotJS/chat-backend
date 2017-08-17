@@ -53,16 +53,15 @@ CREATE TABLE conversionMeta (
 );
 
 CREATE TABLE message (
-id INT AUTO_INCREMENT,
-author INT,
-message_body TEXT,
-created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-type ENUM ('image','link','audio','text'),
-conversation_id INT,
-PRIMARY KEY (id),
-UNIQUE INDEX (conversation_id),
-FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
-FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
+  id INT AUTO_INCREMENT,
+  author INT,
+  message_body TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  type ENUM ('image','link','audio','text'),
+  conversation_id INT,
+  PRIMARY KEY (id),
+  FOREIGN KEY (author) REFERENCES user (id) ON DELETE CASCADE,
+  FOREIGN KEY (conversation_id) REFERENCES conversation (id) ON DELETE CASCADE
 );
 
 CREATE TABLE conversationUser (
