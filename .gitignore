@@ -1,2 +1,6 @@
 node_modules/
 database/sqlTest.sql
+
+#TEMPORARY
+
+./package-lock.json
