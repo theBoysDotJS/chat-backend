@@ -7,15 +7,16 @@ const bodyParser= require("body-parser");
 const morgan= require("morgan");
 const session= require("express-session");
 const mysql = require('promise-mysql');
-// const cors = require('cors');
-const http = require('http').createServer(app)
-const io = require('socket.io')(http);
+const cors = require('cors');
+
 // temp translate API
 const translate = require('google-translate-api');
 const checkLoginToken = require('./lib/check-login-token.js');
 // Create new express web server
 
-
+const app = express();
+const http = require('http').createServer(app)
+const io = require('socket.io')(http);
 
 
 // Data Loader
@@ -39,16 +40,16 @@ const messageController = require('./controllers/message.js');
 //Middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
+// app.use(cors());
 
-// CORS configuration
 app.use(function (req, res, next) {
-        res.setHeader('Access-Control-Allow-Origin', "http://localhost:3001");
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', "http://localhost:3000");
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-        next();
-    }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  next();
+}
 );
 
 app.use(checkLoginToken(queryAPI));
@@ -61,41 +62,48 @@ app.get('/', function (req, res){
 })
 
 
- let port = 3000;
- http.listen(port, function(){
-    console.log(`listening for requests on port ${port}`);
+let port = 3001;
+http.listen(port, function(){
+   console.log(`listening for requests on port ${port}`);
+
 });
 
 // Socket.io logic
 
 io.on('connection', (socket) => {
-    console.log('made socket connection', socket.id);
-    // Handle chat event
-    socket.on('chat', function(data){
-        // get the chatroom ID
-        // req.params.id for the URL
-        // function to save data to database...
-        // only recieve messages.
-        //
+  
+  console.log('made socket connection', socket.id);
+  // Handle chat event
+  socket.on('chat', function(data){
+    
+    
+    queryAPI.messageReceived(data) 
+    .then(result => {
+      data["messageId"]=result.insertId
 
-        // if statements to filter the data.
-        console.log(req.user)
-        console.log(data, "this is the new log")
-        translate(data.text, {to: 'fr'})
+      queryAPI.getUserLanguage(data.user)
+      .then(rowData=> {
+      
+        translate(data.text, {to:
+          rowData[0].language})
         .then( trans => {
           data.text = trans.text;
-          console.log(data, "this is the data")
+         
+          //add user.id in my text
+          
+          //kind of a return
+  
           io.sockets.emit('chat', data);
-        }
-        )
-        console.log(data, "look at me")
-        // console.log(data);
+        })
+      })
+  
+    })
+  });
 
-    });
+  // Handle typing event
+  // socket.on('typing', function(data){
+  //     socket.broadcast.emit('typing', data);
+  // });
 
-    // Handle typing event
-    socket.on('typing', function(data){
-        socket.broadcast.emit('typing', data);
-    });
 
 });
