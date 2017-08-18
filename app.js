@@ -79,6 +79,7 @@ io.on('connection', (socket) => {
         //
 
         // if statements to filter the data.
+        console.log(req.user)
         console.log(data, "this is the new log")
         translate(data.text, {to: 'fr'})
         .then( trans => {
@@ -98,4 +99,3 @@ io.on('connection', (socket) => {
     });
 
 });
-
