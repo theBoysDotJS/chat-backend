@@ -15,8 +15,9 @@ module.exports = (queryAPI) => {
         conversation_id : req.body.conversation_id
       })
       .then(message => res.status(201).json(message))
-      .catch(err => res.status(400).json(err))
+      .catch(err => res.status(400).json(err.message))
   })
+  
   // edit a message
   messageController.put('/:id', onlyLoggedIn, (req, res) => {
     console.log("about to run put function");
