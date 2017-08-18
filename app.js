@@ -12,9 +12,9 @@ const cors = require('cors');
 // temp translate API
 const translate = require('google-translate-api');
 const checkLoginToken = require('./lib/check-login-token.js');
+
 // Create new express web server
 
-const app = express();
 const http = require('http').createServer(app)
 const io = require('socket.io')(http);
 
@@ -71,32 +71,32 @@ http.listen(port, function(){
 // Socket.io logic
 
 io.on('connection', (socket) => {
-  
+
   console.log('made socket connection', socket.id);
   // Handle chat event
   socket.on('chat', function(data){
-    
-    
-    queryAPI.messageReceived(data) 
+
+
+    queryAPI.messageReceived(data)
     .then(result => {
       data["messageId"]=result.insertId
 
       queryAPI.getUserLanguage(data.user)
       .then(rowData=> {
-      
+
         translate(data.text, {to:
           rowData[0].language})
         .then( trans => {
           data.text = trans.text;
-         
+
           //add user.id in my text
-          
+
           //kind of a return
-  
+
           io.sockets.emit('chat', data);
         })
       })
-  
+
     })
   });
 

@@ -48,8 +48,7 @@ module.exports = (queryAPI) => {
       };
       queryAPI.getSingleConversation(req.params.id)
       .then(conversation => {
-
-          conversationObj = {conversation[0]};
+          conversationObj = conversation[0];
           return (queryAPI.getSingleConversationUser(req.params.id))
         })
         .then(users => {
