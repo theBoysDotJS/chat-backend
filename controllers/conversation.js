@@ -64,7 +64,6 @@ module.exports = (queryAPI) => {
   })
 
 
-
   // get a ALL conversations
   conversationController.get('/', onlyLoggedIn, (req, res) => {
       console.log(req.user.user_id, 'this is the user')

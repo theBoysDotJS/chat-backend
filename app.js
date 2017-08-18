@@ -3,25 +3,26 @@
 //import express library
 const express = require("express");
 const app = express();
+
+// Temp translate API
+const translate = require('google-translate-api');
+
+// Socket setup
+const http = require('http').createServer(app)
+const io = require('socket.io')(http);
+
+// Express middleware
+const cors = require('cors');
 const bodyParser= require("body-parser");
 const morgan= require("morgan");
 const session= require("express-session");
-const mysql = require('promise-mysql');
-const cors = require('cors');
-const http = require('http').createServer(app)
-const io = require('socket.io')(http);
-// temp translate API
-const translate = require('google-translate-api');
 const checkLoginToken = require('./lib/check-login-token.js');
-// Create new express web server
-
-
-
 
 // Data Loader
 const Query = require('./lib/Query');
 
 // Create a connection to the DB
+const mysql = require('promise-mysql');
 const connection = mysql.createPool({
   user: 'root',
   database: 'chat_box'
@@ -35,7 +36,7 @@ const conversationController = require('./controllers/conversation.js');
 const messageController = require('./controllers/message.js');
 
 
-//Middleware
+// Use Middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cors());
@@ -49,7 +50,6 @@ app.use(cors());
 //         next();
 //     }
 // );
-
 app.use(checkLoginToken(queryAPI));
 app.use('/auth', authController(queryAPI));
 app.use('/message', messageController(queryAPI));
@@ -59,14 +59,12 @@ app.get('/', function (req, res){
   res.sendFile(__dirname + '/index.html');
 })
 
-
  let port = 3000;
  http.listen(port, function(){
     console.log(`listening for requests on port ${port}`);
 });
 
 // Socket.io logic
-
 io.on('connection', (socket) => {
     console.log('made socket connection', socket.id);
     // Handle chat event
