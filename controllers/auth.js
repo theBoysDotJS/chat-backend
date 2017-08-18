@@ -7,13 +7,12 @@ module.exports = (queryAPI) => {
 
   // Create a new user (signup)
   authController.post('/user', (req, res) => {
-	 //console.log(req.body, 'body in auth user')
     queryAPI.createUser({
       email: req.body.email,
       username: req.body.username,
       password: req.body.password,
       firstName : req.body.firstName,
-	    lastName : req.body.lastName,
+	  lastName : req.body.lastName,
       language : req.body.language
     })
     .then(user => res.status(201).json(user))
@@ -23,9 +22,9 @@ module.exports = (queryAPI) => {
 
   // Create a new session (login)
   authController.post('/session', (req, res) => {
-	  console.log(req.body)
+	  console.log(req.body, 'this is in sessions')
 		queryAPI.createTokenFromCredentials(
-	      req.body.email,
+	      req.body.username,
 	      req.body.password
 	    )
 	    .then(token => {
@@ -47,10 +46,10 @@ module.exports = (queryAPI) => {
   });
 
   // Retrieve current user
-  authController.get('/me', onlyLoggedIn, (req, res) => {
-	    queryAPI.getEmailHash(req.user);
-		res.send(req.user);
-  });
+  // authController.get('/me', onlyLoggedIn, (req, res) => {
+  //    queryAPI.getEmailHash(req.user);
+  // res.send(req.user);
+  // });
 
   return authController;
 };

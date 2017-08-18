@@ -48,7 +48,8 @@ module.exports = (queryAPI) => {
       };
       queryAPI.getSingleConversation(req.params.id)
       .then(conversation => {
-          conversationObj = {...conversation[0]};
+        //   conversationObj = {...conversation[0]};
+          conversationObj = conversation[0];
           return (queryAPI.getSingleConversationUser(req.params.id))
         })
         .then(users => {
@@ -66,6 +67,7 @@ module.exports = (queryAPI) => {
 
   // get a ALL conversations
   conversationController.get('/', onlyLoggedIn, (req, res) => {
+      console.log(req.user.user_id, 'this is the user')
 
       var conversationArray = [];
 

@@ -7,7 +7,7 @@ const bodyParser= require("body-parser");
 const morgan= require("morgan");
 const session= require("express-session");
 const mysql = require('promise-mysql');
-// const cors = require('cors');
+const cors = require('cors');
 const http = require('http').createServer(app)
 const io = require('socket.io')(http);
 // temp translate API
@@ -23,11 +23,10 @@ const Query = require('./lib/Query');
 
 // Create a connection to the DB
 const connection = mysql.createPool({
-   host     : 'localhost',
-   user     : 'root',
-   password : 'password',
-   database : 'chat_box'
+  user: 'root',
+  database: 'chat_box'
 });
+
 const queryAPI = new Query(connection);
 
 // Controllers
@@ -39,17 +38,17 @@ const messageController = require('./controllers/message.js');
 //Middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-
+app.use(cors());
 // CORS configuration
-app.use(function (req, res, next) {
-        res.setHeader('Access-Control-Allow-Origin', "http://localhost:3001");
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-        next();
-    }
-);
+// app.use(function (req, res, next) {
+//         res.setHeader('Access-Control-Allow-Origin', "http://localhost:3001");
+//         res.setHeader('Access-Control-Allow-Credentials', 'true');
+//
+//         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//         next();
+//     }
+// );
 
 app.use(checkLoginToken(queryAPI));
 app.use('/auth', authController(queryAPI));
@@ -98,4 +97,3 @@ io.on('connection', (socket) => {
     });
 
 });
-
