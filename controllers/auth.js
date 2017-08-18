@@ -13,7 +13,9 @@ module.exports = (queryAPI) => {
       password: req.body.password,
       firstName : req.body.firstName,
 	  lastName : req.body.lastName,
-      language : req.body.language
+      language : req.body.language,
+      avatarUrl : req.body.avatarUrl
+
     })
     .then(user => res.status(201).json(user))
     .catch(err => res.status(400).json(err));
@@ -46,10 +48,11 @@ module.exports = (queryAPI) => {
   });
 
   // Retrieve current user
-  // authController.get('/me', onlyLoggedIn, (req, res) => {
-  //    queryAPI.getEmailHash(req.user);
-  // res.send(req.user);
-  // });
+  authController.get('/me', onlyLoggedIn, (req, res) => {
+	    queryAPI.returnFullUserObject(req.user.user_id)
+		  .then((result) => res.status(201).json(result))
+      .catch((err) => res.status(400).json(err.message))
+  });
 
   return authController;
 };
