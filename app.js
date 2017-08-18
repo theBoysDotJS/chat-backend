@@ -2,6 +2,7 @@
 
 //import express library
 const express = require("express");
+const app = express();
 const bodyParser= require("body-parser");
 const morgan= require("morgan");
 const session= require("express-session");
@@ -10,12 +11,13 @@ const cors = require('cors');
 
 // temp translate API
 const translate = require('google-translate-api');
-
 const checkLoginToken = require('./lib/check-login-token.js');
 // Create new express web server
+
 const app = express();
 const http = require('http').createServer(app)
 const io = require('socket.io')(http);
+
 
 // Data Loader
 const Query = require('./lib/Query');
@@ -60,11 +62,10 @@ app.get('/', function (req, res){
 })
 
 
-
-
 let port = 3001;
 http.listen(port, function(){
    console.log(`listening for requests on port ${port}`);
+
 });
 
 // Socket.io logic
@@ -103,5 +104,6 @@ io.on('connection', (socket) => {
   // socket.on('typing', function(data){
   //     socket.broadcast.emit('typing', data);
   // });
+
 
 });
