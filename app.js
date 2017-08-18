@@ -70,28 +70,32 @@ http.listen(port, function(){
 // Socket.io logic
 
 io.on('connection', (socket) => {
+  
   console.log('made socket connection', socket.id);
   // Handle chat event
   socket.on('chat', function(data){
     
+    
     queryAPI.messageReceived(data) 
     .then(result => {
+      data["messageId"]=result.insertId
 
+      queryAPI.getUserLanguage(data.user)
+      .then(rowData=> {
       
-      data["id"]=result.insertId
-
-      
-      translate(data.text, {to:
-        'fr'})
-      .then( trans => {
-        data.text = trans.text;
-        console.log(data)
-        //add user.id in my text
-        
-        //kind of a return
-
-        io.sockets.emit('chat', data);
+        translate(data.text, {to:
+          rowData[0].language})
+        .then( trans => {
+          data.text = trans.text;
+         
+          //add user.id in my text
+          
+          //kind of a return
+  
+          io.sockets.emit('chat', data);
+        })
       })
+  
     })
   });
 
