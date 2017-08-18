@@ -29,8 +29,8 @@ module.exports = (queryAPI) => {
 	      req.body.username,
 	      req.body.password
 	    )
-	    .then(token => {
-			res.status(201).json({ token: token })
+	    .then(resp => {
+			res.status(201).json({ token: resp.token, user: resp.id })
 		})
 	    .catch(err => res.status(401).json(err));
   });

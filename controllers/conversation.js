@@ -9,10 +9,10 @@ module.exports = (queryAPI) => {
 
 
   conversationController.post('/create', onlyLoggedIn, (req, res) => {
-    console.log("we are in the conversation controller.. ")
+    console.log(req.body, "we are in the conversation controller.. ")
     queryAPI.createNewConversation({
         name: req.body.name,
-        admin: req.body.admin
+        admin: req.user.user_id
     })
     .then(result => res.status(201).json(result))
     .catch(err => res.status(400).json(err.message));

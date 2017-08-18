@@ -13,9 +13,9 @@ const io = require('socket.io')(http);
 
 // Express middleware
 const cors = require('cors');
-const bodyParser= require("body-parser");
-const morgan= require("morgan");
-const session= require("express-session");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const session = require("express-session");
 const checkLoginToken = require('./lib/check-login-token.js');
 
 // Data Loader
@@ -23,10 +23,7 @@ const Query = require('./lib/Query');
 
 // Create a connection to the DB
 const mysql = require('promise-mysql');
-const connection = mysql.createPool({
-  user: 'root',
-  database: 'chat_box'
-});
+const connection = mysql.createPool({user: 'root', database: 'chat_box'});
 
 const queryAPI = new Query(connection);
 
@@ -34,7 +31,6 @@ const queryAPI = new Query(connection);
 const authController = require('./controllers/auth.js');
 const conversationController = require('./controllers/conversation.js');
 const messageController = require('./controllers/message.js');
-
 
 // Use Middleware
 app.use(morgan('dev'));
@@ -55,44 +51,31 @@ app.use('/auth', authController(queryAPI));
 app.use('/message', messageController(queryAPI));
 app.use('/conversation', conversationController(queryAPI));
 
-app.get('/', function (req, res){
-  res.sendFile(__dirname + '/index.html');
+app.get('/', function(req, res) {
+	res.sendFile(__dirname + '/index.html');
 })
 
- let port = 3000;
- http.listen(port, function(){
-    console.log(`listening for requests on port ${port}`);
+let port = 3000;
+http.listen(port, function() {
+	console.log(`listening for requests on port ${port}`);
 });
 
 // Socket.io logic
 io.on('connection', (socket) => {
-    console.log('made socket connection', socket.id);
-    // Handle chat event
-    socket.on('chat', function(data){
-        // get the chatroom ID
-        // req.params.id for the URL
-        // function to save data to database...
-        // only recieve messages.
-        //
+	console.log('made socket connection', socket.id);
+	// Handle chat event
+	socket.on('chat', function(data) {
+		// if statements to filter the data.
+		translate(data.text, {to: 'fr'}).then(trans => {
+			data.text = trans.text;
+			io.sockets.emit('chat', data);
+		})
 
-        // if statements to filter the data.
-        console.log(req.user)
-        console.log(data, "this is the new log")
-        translate(data.text, {to: 'fr'})
-        .then( trans => {
-          data.text = trans.text;
-          console.log(data, "this is the data")
-          io.sockets.emit('chat', data);
-        }
-        )
-        console.log(data, "look at me")
-        // console.log(data);
+	});
 
-    });
-
-    // Handle typing event
-    socket.on('typing', function(data){
-        socket.broadcast.emit('typing', data);
-    });
+	// Handle typing event
+	socket.on('typing', function(data) {
+		socket.broadcast.emit('typing', data);
+	});
 
 });
