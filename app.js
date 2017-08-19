@@ -22,7 +22,12 @@ const io = require('socket.io')(http);
 const Query = require('./lib/Query');
 
 // Create a connection to the DB
-const connection = mysql.createPool({host: 'us-cdbr-iron-east-05.cleardb.net', user: 'b537a8dc95ca1e', password: '6b5c43b1', database: 'heroku_fd5680f97c93408'});
+const connection = mysql.createPool({
+	 host: 'us-cdbr-iron-east-05.cleardb.net',
+	 user: 'b537a8dc95ca1e',
+	 password: '6b5c43b1',
+	 database: 'heroku_fd5680f97c93408'}
+ );
 
 const queryAPI = new Query(connection);
 

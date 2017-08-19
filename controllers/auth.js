@@ -15,11 +15,10 @@ module.exports = (queryAPI) => {
 	  lastName : req.body.lastName,
       language : req.body.language,
       avatarUrl : req.body.avatarUrl
-
     })
     .then(user => res.status(201).json(user))
     .catch((err) => {
-      // console.log();
+      console.log(err);
 
       res.status(400).json({
       'error' : "ERROR",
@@ -38,13 +37,18 @@ module.exports = (queryAPI) => {
 	      req.body.password
 	    )
 	    .then(resp => {
+			console.log(resp, 'the response')
 			res.status(201).json({ token: resp.token, user: resp.id })
 		})
-	    .catch(err => res.status(401).json({
-      'error' : "ERROR",
-      'message' : 'Login Failed',
-      'err_message' :  err.message
-    }));
+	    .catch(err => {
+
+		console.log(err.message, 'this is the error')
+		  res.status(401).json({
+	      'error' : "ERROR",
+	      'message' : 'Login Failed',
+	      'err_message' :  err.message
+	    });
+	  });
   });
 
 
