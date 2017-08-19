@@ -9,14 +9,18 @@ module.exports = (queryAPI) => {
 
 
   conversationController.post('/create', onlyLoggedIn, (req, res) => {
-    console.log("we are in the conversation controller.. ")
+    console.log(req.body, "we are in the conversation controller.. ")
     queryAPI.createNewConversation({
         name: req.body.name,
-        admin: req.body.admin
+        admin: req.user.user_id
     })
     .then(result => res.status(201).json(result))
-    .catch(err => res.status(400).json(err.message));
-  })
+    .catch(err => res.status(400).json({
+    'error' : "ERROR",
+    'message' : 'Failed to create a conversation',
+    'err_message' :  err.message
+  }))
+ })
 
   // update a conversation
     conversationController.put('/:id', onlyLoggedIn, (req, res) => {
@@ -27,7 +31,11 @@ module.exports = (queryAPI) => {
               admin: req.body.admin
           })
       .then(conversation => res.status(201).json(conversation))
-      .catch(err => res.status(400).json(err));
+      .catch(err => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to update the conversation',
+      'err_message' :  err.message
+    }));
     })
 
   // delete a conversation
@@ -35,7 +43,11 @@ module.exports = (queryAPI) => {
         console.log("deleting a conversation... ")
         queryAPI.deleteConversation(req.params.id)
         .then(data => res.status(201).json(data))
-        .catch(err => res.status(400).json(err));
+        .catch(err => res.status(400).json({
+        'error' : "ERROR",
+        'message' : 'Failed to delete a conversation',
+        'err_message' :  err.message
+      }));
   })
 
 
@@ -48,6 +60,9 @@ module.exports = (queryAPI) => {
       };
       queryAPI.getSingleConversation(req.params.id)
       .then(conversation => {
+
+        //   conversationObj = {...conversation[0]};
+
           conversationObj = conversation[0];
           return (queryAPI.getSingleConversationUser(req.params.id))
         })
@@ -59,13 +74,17 @@ module.exports = (queryAPI) => {
           conversationObj['messages'] = messages;
           res.status(201).json(conversationObj)
         })
-      .catch(err => res.status(400).json(err));
+      .catch(err => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to get single conversation',
+      'err_message' :  err.message
+    }));
   })
-
 
 
   // get a ALL conversations
   conversationController.get('/', onlyLoggedIn, (req, res) => {
+      console.log(req.user.user_id, 'this is the user')
 
       var conversationArray = [];
 
@@ -102,7 +121,11 @@ module.exports = (queryAPI) => {
 
         })
 
-      .catch(err => res.status(400).json(err.message));
+      .catch(err => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to get all conversations',
+      'err_message' :  err.message
+    }));
   })
 
   // add a user/ join a conversation
@@ -112,7 +135,11 @@ module.exports = (queryAPI) => {
           req.body.users
       )
       .then(success => res.status(201).json(success))
-      .catch(err => res.status(400).json(err.message));
+      .catch(err => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to add user/join conversation',
+      'err_message' :  err.message
+    }));
   })
 
   // remove a user from a conversation
@@ -122,7 +149,11 @@ module.exports = (queryAPI) => {
         req.body.users
     )
     .then(success => res.status(201).json(success))
-    .catch(err => res.status(400).json(false));
+    .catch(err => res.status(400).json({
+    'error' : "ERROR",
+    'message' : 'Failed to add remove/leave from conversation',
+    'err_message' :  err.message
+  }));
   })
 
 

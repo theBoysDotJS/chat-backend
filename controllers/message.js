@@ -15,9 +15,13 @@ module.exports = (queryAPI) => {
         conversation_id : req.body.conversation_id
       })
       .then(message => res.status(201).json(message))
-      .catch(err => res.status(400).json(err.message))
+      .catch(err => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to create a new message',
+      'err_message' :  err.message
+    }))
   })
-  
+
   // edit a message
   messageController.put('/:id', onlyLoggedIn, (req, res) => {
     console.log("about to run put function");
@@ -32,7 +36,11 @@ module.exports = (queryAPI) => {
       console.log("message successfully edited")
       res.status(201).json(message)
     })
-    .catch(err => res.status(400).json(err))
+    .catch(err => res.status(400).json({
+    'error' : "ERROR",
+    'message' : 'Failed to edit the message',
+    'err_message' :  err.message
+  }))
   })
 
 
@@ -50,7 +58,11 @@ module.exports = (queryAPI) => {
     })
     .catch(err => {
       console.log(err.message, "the error message")
-      res.status(400).send(err.message)});
+      res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to delete the message',
+      'err_message' :  err.message
+    })});
   });
   return messageController;
 };
