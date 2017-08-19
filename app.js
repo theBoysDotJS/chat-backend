@@ -8,6 +8,7 @@ const app = express();
 const translate = require('google-translate-api');
 
 // Socket setup
+
 const http = require('http').createServer(app)
 const io = require('socket.io')(http);
 
@@ -35,6 +36,7 @@ const messageController = require('./controllers/message.js');
 // Use Middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
+
 app.use(cors());
 // CORS configuration
 // app.use(function (req, res, next) {
@@ -46,6 +48,7 @@ app.use(cors());
 //         next();
 //     }
 // );
+
 app.use(checkLoginToken(queryAPI));
 app.use('/auth', authController(queryAPI));
 app.use('/message', messageController(queryAPI));
@@ -55,27 +58,47 @@ app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/index.html');
 })
 
+
 let port = 3000;
 http.listen(port, function() {
 	console.log(`listening for requests on port ${port}`);
+
 });
 
 // Socket.io logic
 io.on('connection', (socket) => {
-	console.log('made socket connection', socket.id);
-	// Handle chat event
-	socket.on('chat', function(data) {
-		// if statements to filter the data.
-		translate(data.text, {to: 'fr'}).then(trans => {
-			data.text = trans.text;
-			io.sockets.emit('chat', data);
-		})
 
-	});
+  console.log('made socket connection', socket.id);
+  // Handle chat event
+  socket.on('chat', function(data){
 
-	// Handle typing event
-	socket.on('typing', function(data) {
-		socket.broadcast.emit('typing', data);
-	});
+
+    queryAPI.messageReceived(data)
+    .then(result => {
+      data["messageId"]=result.insertId
+
+      queryAPI.getUserLanguage(data.user)
+      .then(rowData=> {
+
+        translate(data.text, {to:
+          rowData[0].language})
+        .then( trans => {
+          data.text = trans.text;
+
+          //add user.id in my text
+
+          //kind of a return
+
+          io.sockets.emit('chat', data);
+        })
+      })
+
+    })
+  });
+
+  // Handle typing event
+  // socket.on('typing', function(data){
+  //     socket.broadcast.emit('typing', data);
+  // });
 
 });

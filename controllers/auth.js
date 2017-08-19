@@ -18,9 +18,8 @@ module.exports = (queryAPI) => {
 
     })
     .then(user => res.status(201).json(user))
-    .catch(err => res.status(400).json(err));
+    .catch(err => res.status(400).json(err.message));
   });
-
 
   // Create a new session (login)
   authController.post('/session', (req, res) => {
@@ -41,11 +40,9 @@ module.exports = (queryAPI) => {
 	console.log(req.sessionToken, req.body, 'tokens in delete');
     if (req.sessionToken === req.body.token) {
       queryAPI.deleteToken(req.body.token)
+
       .then(() => res.status(204).end())
-      .catch(err => res.status(400).json(err));
-    } else {
-      res.status(401).json({ error: 'Invalid session token' });
-  }
+      .catch(err => res.status(400).json(err.message));
   });
 
   // Retrieve current user
