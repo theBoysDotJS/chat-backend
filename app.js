@@ -82,18 +82,14 @@ io.on('connection', (socket) => {
 	console.log('made socket connection', socket.id);
 	// Handle chat event
 	socket.on('chat', function(data) {
-
+		console.log('message recieved')
 		queryAPI.messageReceived(data).then(result => {
 			data["messageId"] = result.insertId
 
 			queryAPI.getUserLanguage(data.user).then(rowData => {
-
+				console.log(rowData, 'this is query return')
 				translate(data.text, {to: rowData[0].language}).then(trans => {
 					data.text = trans.text;
-
-					//add user.id in my text
-
-					//kind of a return
 
 					io.sockets.emit('chat', data);
 				})
