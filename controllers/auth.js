@@ -60,7 +60,8 @@ module.exports = (queryAPI) => {
       'message' : 'Failed to delete a session',
       'err_message' :  err.message
     }));
-  });
+}
+});
 
   // Retrieve current user
   authController.get('/me', onlyLoggedIn, (req, res) => {
