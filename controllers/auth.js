@@ -18,7 +18,16 @@ module.exports = (queryAPI) => {
 
     })
     .then(user => res.status(201).json(user))
-    .catch(err => res.status(400).json(err.message));
+    .catch((err) => {
+      // console.log();
+
+      res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Signup Failed',
+      'err_message' :  err.message
+    })
+  }
+  )
   });
 
   // Create a new session (login)
@@ -31,7 +40,11 @@ module.exports = (queryAPI) => {
 	    .then(resp => {
 			res.status(201).json({ token: resp.token, user: resp.id })
 		})
-	    .catch(err => res.status(401).json(err));
+	    .catch(err => res.status(401).json({
+      'error' : "ERROR",
+      'message' : 'Login Failed',
+      'err_message' :  err.message
+    }));
   });
 
 
@@ -42,14 +55,22 @@ module.exports = (queryAPI) => {
       queryAPI.deleteToken(req.body.token)
 
       .then(() => res.status(204).end())
-      .catch(err => res.status(400).json(err.message));
+      .catch(err => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to delete a session',
+      'err_message' :  err.message
+    }));
   });
 
   // Retrieve current user
   authController.get('/me', onlyLoggedIn, (req, res) => {
 	    queryAPI.returnFullUserObject(req.user.user_id)
 		  .then((result) => res.status(201).json(result))
-      .catch((err) => res.status(400).json(err.message))
+      .catch((err) => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to return current user',
+      'err_message' :  err.message
+    }))
   });
 
   return authController;
