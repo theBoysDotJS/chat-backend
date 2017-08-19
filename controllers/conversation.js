@@ -9,10 +9,10 @@ module.exports = (queryAPI) => {
 
 
   conversationController.post('/create', onlyLoggedIn, (req, res) => {
-    console.log("we are in the conversation controller.. ")
+    console.log(req.body, "we are in the conversation controller.. ")
     queryAPI.createNewConversation({
         name: req.body.name,
-        admin: req.body.admin
+        admin: req.user.user_id
     })
     .then(result => res.status(201).json(result))
     .catch(err => res.status(400).json(err.message));
@@ -48,6 +48,9 @@ module.exports = (queryAPI) => {
       };
       queryAPI.getSingleConversation(req.params.id)
       .then(conversation => {
+
+        //   conversationObj = {...conversation[0]};
+
           conversationObj = conversation[0];
           return (queryAPI.getSingleConversationUser(req.params.id))
         })
@@ -63,9 +66,9 @@ module.exports = (queryAPI) => {
   })
 
 
-
   // get a ALL conversations
   conversationController.get('/', onlyLoggedIn, (req, res) => {
+      console.log(req.user.user_id, 'this is the user')
 
       var conversationArray = [];
 

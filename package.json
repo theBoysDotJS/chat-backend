@@ -1,7 +1,7 @@
 {
-  "name": "hao-login-backend",
+  "name": "chat-application-backend",
   "version": "1.0.0",
-  "description": "standard login page",
+  "description": "Express server for chat-application",
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
@@ -16,6 +16,7 @@
     "express": "^4.15.4",
     "express-session": "^1.15.5",
     "google-translate-api": "^2.3.0",
+    "google-translate-token": "^1.0.0",
     "knex": "^0.13.0",
     "morgan": "^1.8.2",
     "mysql": "^2.14.1",
