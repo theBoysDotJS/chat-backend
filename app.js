@@ -45,7 +45,7 @@ app.use(bodyParser.json());
 app.use(function(req, res, next) {
 
 	// Website you wish to allow to connect
-	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+	res.setHeader('Access-Control-Allow-Origin', '*'); //change this after testing
 
 	// Request methods you wish to allow
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -82,18 +82,14 @@ io.on('connection', (socket) => {
 	console.log('made socket connection', socket.id);
 	// Handle chat event
 	socket.on('chat', function(data) {
-
+		console.log('message recieved')
 		queryAPI.messageReceived(data).then(result => {
 			data["messageId"] = result.insertId
 
 			queryAPI.getUserLanguage(data.user).then(rowData => {
-
+				console.log(rowData, 'this is query return')
 				translate(data.text, {to: rowData[0].language}).then(trans => {
 					data.text = trans.text;
-
-					//add user.id in my text
-
-					//kind of a return
 
 					io.sockets.emit('chat', data);
 				})
