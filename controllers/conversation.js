@@ -14,6 +14,10 @@ module.exports = (queryAPI) => {
         name: req.body.name,
         admin: req.user.user_id
     })
+	.then(result => {
+		queryAPI.joinConversationAllUsers(result.id, req.user.user_id)
+		return result;
+	})
     .then(result => res.status(201).json(result))
     .catch(err => res.status(400).json({
     'error' : "ERROR",
