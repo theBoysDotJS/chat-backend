@@ -12,19 +12,17 @@ module.exports = (queryAPI) => {
       username: req.body.username,
       password: req.body.password,
       firstName : req.body.firstName,
-	  lastName : req.body.lastName,
+	    lastName : req.body.lastName,
       language : req.body.language,
       avatarUrl : req.body.avatarUrl
     })
-    .then(user => res.status(201).json(user))
-    .catch((err) => {
-      console.log(err);
-
-      res.status(400).json({
-      'error' : "ERROR",
-      'message' : 'Signup Failed',
-      'err_message' :  err.message
+    .then(user => {
+        // console.log("USER RETURN", user)
+        res.status(201).json(user)
     })
+    .catch((err) => {
+      console.log("CATCH RETURN", err);
+      res.status(400).json(err)
   }
   )
   });
@@ -42,7 +40,7 @@ module.exports = (queryAPI) => {
 		})
 	    .catch(err => {
 
-		console.log(err.message, 'this is the error')
+		console.log(err, 'this is the error')
 		  res.status(401).json({
 	      'error' : "ERROR",
 	      'message' : 'Login Failed',
