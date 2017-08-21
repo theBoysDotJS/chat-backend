@@ -3,30 +3,59 @@ const express = require('express');
 const onlyLoggedIn = require('../lib/only-logged-in');
 
 module.exports = (queryAPI) => {
-	const conversationController = express.Router();
 
-	conversationController.post('/create', onlyLoggedIn, (req, res) => {
-		console.log(req.body, "we are in the conversation controller.. ")
-		queryAPI.createNewConversation({name: req.body.name, admin: req.user.user_id}).then(result => {
-			queryAPI.joinConversationAllUsers(result.id, req.user.user_id)
-			return result;
-		}).then(result => res.status(201).json(result)).catch(err => res.status(400).json({'error': "ERROR", 'message': 'Failed to create a conversation', 'err_message': err.message}))
-	})
+  const conversationController = express.Router();
 
-	// update a conversation
-	conversationController.put('/:id', onlyLoggedIn, (req, res) => {
-		queryAPI.updateConversation(req.params.id, {
-			name: req.body.name,
-			admin: req.body.admin
-		}).then(conversation => res.status(201).json(conversation)).catch(err => res.status(400).json({'error': "ERROR", 'message': 'Failed to update the conversation', 'err_message': err.message}));
-	})
 
-	// delete a conversation
-	conversationController.delete('/:id', onlyLoggedIn, (req, res) => {
-		console.log("deleting a conversation... ")
-		queryAPI.deleteConversation(req.params.id).then(data => res.status(201).json(data)).catch(err => res.status(400).json({'error': "ERROR", 'message': 'Failed to delete a conversation', 'err_message': err.message}));
-	})
+  conversationController.post('/create', onlyLoggedIn, (req, res) => {
+    console.log(req.body, "we are in the conversation controller.. ")
+    queryAPI.createNewConversation({
+        name: req.body.name,
+        admin: req.user.user_id
+    })
+  	.then(result => {
+  		queryAPI.joinConversationAllUsers(result.id, req.user.user_id)
+  		return result;
+  	})
+    .then(result => res.status(201).json(result))
+    .catch(err => res.status(400).json({
+    'error' : "ERROR",
+    'message' : 'Failed to create a conversation',
+    'err_message' :  err.message
+  }))
+ })
 
+  // update a conversation
+    conversationController.put('/:id', onlyLoggedIn, (req, res) => {
+      queryAPI.updateConversation(
+          req.params.id,
+          {
+              name: req.body.name,
+              admin: req.body.admin
+          })
+      .then(conversation => res.status(201).json(conversation))
+      .catch(err => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to update the conversation',
+      'err_message' :  err.message
+    }));
+    })
+
+  // delete a conversation
+  conversationController.delete('/:id', onlyLoggedIn, (req, res) => {
+        console.log("deleting a conversation... ")
+        queryAPI.deleteConversation(req.params.id)
+        .then(data => res.status(201).json(data))
+        .catch(err => res.status(400).json({
+        'error' : "ERROR",
+        'message' : 'Failed to delete a conversation',
+        'err_message' :  err.message
+      }));
+  })
+
+
+
+ 
 	// get a single conversation
 	conversationController.get('/:id', (req, res) => {
 		var conversationObj = {
@@ -86,15 +115,34 @@ module.exports = (queryAPI) => {
 		}).catch(err => res.status(400).json({'error': "ERROR", 'message': 'Failed to get all conversations', 'err_message': err.message}));
 	})
 
-	// add a user/ join a conversation
-	conversationController.post('/:id/join', onlyLoggedIn, (req, res) => {
-		queryAPI.joinConversationAllUsers(req.params.id, req.body.user).then(success => res.status(201).json(success)).catch(err => res.status(400).json({'error': "ERROR", 'message': 'Failed to add user/join conversation', 'err_message': err.message}));
-	})
+  // add a user/ join a conversation
+  conversationController.post('/:id/join', onlyLoggedIn, (req, res) => {
+      queryAPI.joinConversationAllUsers(
+          req.params.id,
+          req.body.user
+      )
+      .then(success => res.status(201).json(success))
+      .catch(err => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to add user/join conversation',
+      'err_message' :  err.message
+    }));
+  })
 
-	// remove a user from a conversation
-	conversationController.put('/:id/leave', onlyLoggedIn, (req, res) => {
-		queryAPI.removeAllUserFromConversation(req.params.id, req.body.users).then(success => res.status(201).json(success)).catch(err => res.status(400).json({'error': "ERROR", 'message': 'Failed to add remove/leave from conversation', 'err_message': err.message}));
-	})
+  // remove a user from a conversation
+  conversationController.put('/:id/leave', onlyLoggedIn, (req, res) => {
+    queryAPI.removeAllUserFromConversation(
+        req.params.id,
+        req.body.users
+    )
+    .then(success => res.status(201).json(success))
+    .catch(err => res.status(400).json({
+    'error' : "ERROR",
+    'message' : 'Failed to add remove/leave from conversation',
+    'err_message' :  err.message
+  }));
+  })
 
-	return conversationController;
+
+  return conversationController;
 };

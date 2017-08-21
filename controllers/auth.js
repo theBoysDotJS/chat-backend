@@ -3,24 +3,31 @@ const express = require('express');
 const onlyLoggedIn = require('../lib/only-logged-in');
 
 module.exports = (queryAPI) => {
-	const authController = express.Router();
 
-	// Create a new user (signup)
-	authController.post('/user', (req, res) => {
-		queryAPI.createUser({
-			email: req.body.email,
-			username: req.body.username,
-			password: req.body.password,
-			firstName: req.body.firstName,
-			lastName: req.body.lastName,
-			language: req.body.language,
-			avatarUrl: req.body.avatarUrl
-		}).then(user => res.status(201).json(user)).catch((err) => {
-			console.log(err);
+  const authController = express.Router();
 
-			res.status(400).json({'error': "ERROR", 'message': 'Signup Failed', 'err_message': err.message})
-		})
-	});
+  // Create a new user (signup)
+  authController.post('/user', (req, res) => {
+    queryAPI.createUser({
+      email: req.body.email,
+      username: req.body.username,
+      password: req.body.password,
+      firstName : req.body.firstName,
+	    lastName : req.body.lastName,
+      language : req.body.language,
+      avatarUrl : req.body.avatarUrl
+    })
+    .then(user => {
+        // console.log("USER RETURN", user)
+        res.status(201).json(user)
+    })
+    .catch((err) => {
+      console.log("CATCH RETURN", err);
+      res.status(400).json(err)
+  }
+  )
+  });
+
 
 	// Create a new session (login)
 	authController.post('/session', (req, res) => {
