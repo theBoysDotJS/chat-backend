@@ -39,13 +39,8 @@ module.exports = (queryAPI) => {
 			res.status(201).json({ token: resp.token, user: resp.id })
 		})
 	    .catch(err => {
-
-		console.log(err, 'this is the error')
-		  res.status(401).json({
-	      'error' : "ERROR",
-	      'message' : 'Login Failed',
-	      'err_message' :  err.message
-	    });
+		  console.log('LINE 43 AUTH.js', err)
+		  res.status(401).json(err);
 	  });
   });
 
