@@ -3,4 +3,4 @@ database/sqlTest.sql
 
 #TEMPORARY
 
-./package-lock.json
+package-lock.json

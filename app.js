@@ -22,9 +22,15 @@ const checkLoginToken = require('./lib/check-login-token.js');
 // Data Loader
 const Query = require('./lib/Query');
 
-// Create a connection to the DB
 const mysql = require('promise-mysql');
-const connection = mysql.createPool({user: 'root', database: 'chat_box'});
+
+// Create a connection to the DB
+const connection = mysql.createPool({
+  host: 'us-cdbr-iron-east-05.cleardb.net',
+  user: 'b537a8dc95ca1e',
+  password: '6b5c43b1',
+  database: 'heroku_fd5680f97c93408'}
+);
 
 const queryAPI = new Query(connection);
 

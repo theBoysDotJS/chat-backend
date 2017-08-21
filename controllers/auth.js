@@ -6,20 +6,20 @@ module.exports = (queryAPI) => {
   const authController = express.Router();
 
   // Create a new user (signup)
-  authController.post('/user', (req, res) => {
+    authController.post('/user', (req, res) => {
     queryAPI.createUser({
       email: req.body.email,
       username: req.body.username,
       password: req.body.password,
       firstName : req.body.firstName,
-	  lastName : req.body.lastName,
+	    lastName : req.body.lastName,
       language : req.body.language,
       avatarUrl : req.body.avatarUrl
 
     })
     .then(user => res.status(201).json(user))
     .catch((err) => {
-      // console.log();
+      console.log("uiop", err);
 
       res.status(400).json({
       'error' : "ERROR",
@@ -59,7 +59,8 @@ module.exports = (queryAPI) => {
       'error' : "ERROR",
       'message' : 'Failed to delete a session',
       'err_message' :  err.message
-    }));
+      }))
+    };
   });
 
   // Retrieve current user
