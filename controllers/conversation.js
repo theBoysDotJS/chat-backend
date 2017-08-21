@@ -29,19 +29,23 @@ module.exports = (queryAPI) => {
 
 	// get a single conversation
 	conversationController.get('/:id', (req, res) => {
+		console.log('here')
 		var conversationObj = {
 			messages: [],
 			users: []
 		};
 		queryAPI.getSingleConversation(req.params.id).then(conversation => {
 			//   conversationObj = {...conversation[0]};
+			// console.log(conversation, '$$$$$$$')
 			conversationObj = conversation[0];
-			queryAPI.getSingleConversationUser(req.params.id, req.user.user_id, 'ASC')
+			return queryAPI.getSingleConversationUser(req.params.id)
 		}).then(users => {
+			console.log(users, '@@@@@@@@@@')
 			conversationObj['users'] = users;
-			return (queryAPI.getSingleConversationMessages(req.params.id))
+			return (queryAPI.getSingleConversationMessages(req.params.id, req.user.user_id, 'DESC'))
 		}).then(messages => {
 			conversationObj['messages'] = messages;
+			console.log('THE MESSAGES ARE HERE >>>>>>>', messages)
 			res.status(201).json(conversationObj)
 		}).catch(err => {
 			res.status(400).json({'error': "ERROR", 'message': 'Failed to get single conversation', 'err_message': err.message})
