@@ -71,5 +71,14 @@ module.exports = (queryAPI) => {
     }))
   });
 
+  authController.put('/update', onlyLoggedIn, (req, res) => {
+    console.log("USER ID", req.user.user_id)
+    console.log("NEW LANG", req.body.language)
+
+    queryAPI.changeLanguage(req.user.user_id, req.body.language)
+    .then((result) => res.status(201).json(true))
+    .catch((err) => res.status(400).json(false))
+  })
+
   return authController;
 };
