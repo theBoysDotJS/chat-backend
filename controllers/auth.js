@@ -28,7 +28,6 @@ module.exports = (queryAPI) => {
   )
   });
 
-
 	// Create a new session (login)
 	authController.post('/session', (req, res) => {
 		console.log(req.body, 'this is in sessions')
@@ -50,10 +49,26 @@ module.exports = (queryAPI) => {
 		}
 	});
 
-	// Retrieve current user
-	authController.get('/me', onlyLoggedIn, (req, res) => {
-		queryAPI.returnFullUserObject(req.user.user_id).then((result) => res.status(201).json(result)).catch((err) => res.status(400).json({'error': "ERROR", 'message': 'Failed to return current user', 'err_message': err.message}))
-	});
+  // Retrieve current user
+  authController.get('/me', onlyLoggedIn, (req, res) => {
+	    queryAPI.returnFullUserObject(req.user.user_id)
+		  .then((result) => res.status(201).json(result))
+      .catch((err) => res.status(400).json({
+      'error' : "ERROR",
+      'message' : 'Failed to return current user',
+      'err_message' :  err.message
+    }))
+  });
 
-	return authController;
+  authController.put('/update', onlyLoggedIn, (req, res) => {
+    console.log("USER ID", req.user.user_id)
+    console.log("NEW LANG", req.body.language)
+
+    queryAPI.changeLanguage(req.user.user_id, req.body.language)
+    .then((result) => res.status(201).json(true))
+    .catch((err) => res.status(400).json(false))
+  })
+
+  return authController;
+
 };
