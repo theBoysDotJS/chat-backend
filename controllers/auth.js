@@ -18,7 +18,7 @@ module.exports = (queryAPI) => {
       avatarUrl : req.body.avatarUrl
     })
     .then(user => {
-        // console.log("USER RETURN", user)
+        console.log("USER RETURN", user)
         res.status(201).json(user)
     })
     .catch((err) => {
