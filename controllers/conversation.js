@@ -55,7 +55,7 @@ module.exports = (queryAPI) => {
 
 
 
- 
+
 	// get a single conversation
 	conversationController.get('/:id', (req, res) => {
 		var conversationObj = {
@@ -65,10 +65,10 @@ module.exports = (queryAPI) => {
 		queryAPI.getSingleConversation(req.params.id).then(conversation => {
 			//   conversationObj = {...conversation[0]};
 			conversationObj = conversation[0];
-			queryAPI.getSingleConversationUser(req.params.id, req.user.user_id, 'ASC')
+			return queryAPI.getSingleConversationUser(req.params.id)
 		}).then(users => {
 			conversationObj['users'] = users;
-			return (queryAPI.getSingleConversationMessages(req.params.id))
+			return queryAPI.getSingleConversationMessages(req.params.id, req.user.user_id, 'ASC')
 		}).then(messages => {
 			conversationObj['messages'] = messages;
 			res.status(201).json(conversationObj)

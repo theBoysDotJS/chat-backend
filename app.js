@@ -23,10 +23,10 @@ const Query = require('./lib/Query');
 
 // Create a connection to the DB
 const connection = mysql.createPool({
-	 host: 'us-cdbr-iron-east-05.cleardb.net',
-	 user: 'b537a8dc95ca1e',
-	 password: '6b5c43b1',
-	 database: 'heroku_fd5680f97c93408'}
+	 host: 'localhost',
+	 user: 'root',
+	 database: 'chat_box'
+ }
  );
 
 const queryAPI = new Query(connection);
@@ -76,9 +76,7 @@ http.listen(process.env.PORT || port, function() {
 });
 
 // Socket.io logic
-
 io.on('connection', (socket) => {
-
 	console.log('made socket connection', socket.id);
 	// Handle chat event
 	socket.on('chat', function(data) {
@@ -90,17 +88,16 @@ io.on('connection', (socket) => {
 				console.log(rowData, 'this is query return')
 				translate(data.text, {to: rowData[0].language}).then(trans => {
 					data.text = trans.text;
-
 					io.sockets.emit('chat', data);
 				})
 			})
 
 		})
-	});
+	}); // end socket.on
 
 	// Handle typing event
-	// socket.on('typing', function(data){
-	//     socket.broadcast.emit('typing', data);
-	// });
+	socket.on('typing', data => {
+	    socket.broadcast.emit('typing', data);
+	});
 
 });
