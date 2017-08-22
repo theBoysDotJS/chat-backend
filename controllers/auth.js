@@ -24,8 +24,7 @@ module.exports = (queryAPI) => {
     .catch((err) => {
       console.log("CATCH RETURN", err);
       res.status(400).json(err)
-  }
-  )
+  	})
   });
 
 	// Create a new session (login)
