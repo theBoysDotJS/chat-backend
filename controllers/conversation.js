@@ -1,10 +1,9 @@
 const express = require('express');
 
-
 const onlyLoggedIn = require('../lib/only-logged-in');
 
-
 module.exports = (queryAPI) => {
+
   const conversationController = express.Router();
 
 
@@ -14,6 +13,10 @@ module.exports = (queryAPI) => {
         name: req.body.name,
         admin: req.user.user_id
     })
+  	.then(result => {
+  		queryAPI.joinConversationAllUsers(result.id, req.user.user_id)
+  		return result;
+  	})
     .then(result => res.status(201).json(result))
     .catch(err => res.status(400).json({
     'error' : "ERROR",
@@ -52,87 +55,71 @@ module.exports = (queryAPI) => {
 
 
 
-  // get a single conversation
-  conversationController.get('/:id', (req, res) => {
-      var conversationObj = {
-        messages : [],
-        users: []
-      };
-      queryAPI.getSingleConversation(req.params.id)
-      .then(conversation => {
 
-        //   conversationObj = {...conversation[0]};
+	// get a single conversation
+	conversationController.get('/:id', (req, res) => {
+		var conversationObj = {
+			messages: [],
+			users: []
+		};
+		queryAPI.getSingleConversation(req.params.id).then(conversation => {
+			//   conversationObj = {...conversation[0]};
+			conversationObj = conversation[0];
+			return queryAPI.getSingleConversationUser(req.params.id)
+		}).then(users => {
+			conversationObj['users'] = users;
+			return queryAPI.getSingleConversationMessages(req.params.id, req.user.user_id, 'ASC')
+		}).then(messages => {
+			conversationObj['messages'] = messages;
+			res.status(201).json(conversationObj)
+		}).catch(err => {
+			res.status(400).json({'error': "ERROR", 'message': 'Failed to get single conversation', 'err_message': err.message})
+		});
+	})
 
-          conversationObj = conversation[0];
-          return (queryAPI.getSingleConversationUser(req.params.id))
-        })
-        .then(users => {
-          conversationObj['users'] = users;
-          return(queryAPI.getSingleConversationMessages(req.params.id))
-        })
-        .then(messages => {
-          conversationObj['messages'] = messages;
-          res.status(201).json(conversationObj)
-        })
-      .catch(err => res.status(400).json({
-      'error' : "ERROR",
-      'message' : 'Failed to get single conversation',
-      'err_message' :  err.message
-    }));
-  })
+	// get a ALL conversations
+	conversationController.get('/', onlyLoggedIn, (req, res) => {
+		console.log(req.user.user_id, 'this is the user')
 
+		var conversationArray = [];
 
-  // get a ALL conversations
-  conversationController.get('/', onlyLoggedIn, (req, res) => {
-      console.log(req.user.user_id, 'this is the user')
+		queryAPI.getAllConversations(req.user.user_id).then(conversations => {
+			var stuff = [];
+			conversations.forEach(convo => {
+				conversationArray.push(convo);
+				stuff.push(queryAPI.getSingleConversationUser(convo.id))
+			})
+			return Promise.all(stuff)
+		}).then(users => {
+			conversationArray.map((convo, index) => {
+				convo['users'] = users[index];
+				return convo;
+			})
 
-      var conversationArray = [];
+			var stuff = [];
+			conversationArray.forEach(convo => {
+				stuff.push(queryAPI.getSingleConversationMessages(convo.id, req.user.user_id, 'desc', 2))
 
-      queryAPI.getAllConversations(req.user.user_id)
-      .then(conversations => {
-          var stuff = [];
-          conversations.forEach(convo => {
-            conversationArray.push(convo);
-            stuff.push(queryAPI.getSingleConversationUser(convo.id))
-          })
-          return Promise.all(stuff)
-        })
-        .then(users=>{
-          conversationArray.map((convo, index) => {
-            convo['users'] = users[index];
-            return convo;
-          })
+			})
+			return Promise.all(stuff)
 
-          var stuff = [];
-          conversationArray.forEach(convo => {
-            stuff.push(queryAPI.getSingleConversationMessages(convo.id, 2))
-          })
-          return Promise.all(stuff)
+		}).then(messages => {
+			conversationArray.map((convo, index) => {
+				convo['messages'] = messages[index];
+				return convo;
+			})
 
-        })
-        .then(messages=> {
-          conversationArray.map((convo, index) => {
-            convo['messages'] = messages[index];
-            return convo;
-          })
+			console.log(conversationArray, "aaaaaaa");
+			res.status(201).json(conversationArray);
 
-          console.log(conversationArray, "aaaaaaa");
-          res.status(201).json(conversationArray);
-
-        })
-
-      .catch(err => res.status(400).json({
-      'error' : "ERROR",
-      'message' : 'Failed to get all conversations',
-      'err_message' :  err.message
-    }));
-  })
+		}).catch(err => res.status(400).json({'error': "ERROR", 'message': 'Failed to get all conversations', 'err_message': err.message}));
+	})
 
   // add a user/ join a conversation
   conversationController.post('/:id/join', onlyLoggedIn, (req, res) => {
       queryAPI.joinConversationAllUsers(
           req.params.id,
-          req.body.users
+          req.body.user
       )
       .then(success => res.status(201).json(success))
       .catch(err => res.status(400).json({
