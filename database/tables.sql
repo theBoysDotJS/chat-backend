@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS chat_box;
-
-create database chat_box;
-
-use chat_box;
+-- DROP DATABASE IF EXISTS chat_box;
+--
+-- create database chat_box;
+--
+-- use chat_box;
 
 CREATE TABLE user (
   id INT AUTO_INCREMENT,
