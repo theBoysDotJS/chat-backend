@@ -31,10 +31,10 @@ const Query = require('./lib/Query');
 
  // Create a connection to the DB
 const connection = mysql.createPool({
-     host: 'us-cdbr-iron-east-05.cleardb.net',
-     user: 'b537a8dc95ca1e',
-     password: '6b5c43b1',
-     database: 'heroku_fd5680f97c93408',
+     host: process.env.SQL_HOST,
+     user: process.env.SQL_USER,
+     password: process.env.SQL_PASS,
+     database: process.env.SQL_DB,
  	 connectionLimit: process.env.POOLS || 2
  	}
  );
