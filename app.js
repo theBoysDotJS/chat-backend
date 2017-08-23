@@ -42,17 +42,16 @@ const Query = require('./lib/Query');
  // Create a connection to the DB
 const connection = mysql.createPool({
 
-//      host: 'mysql.bertha.co',
-//      user: 'theboysjs_user',
-//      password: 'ingot.quick.9artie.morse1.vise2',
-//      database: 'theboysjs',
-//  	 connectionLimit: 1
-     host: process.env.SQL_HOST,
-     user: process.env.SQL_USER,
-     password: process.env.SQL_PASS,
-     database: process.env.SQL_DB,
- 	   connectionLimit: process.env.POOLS || 2
-
+     host: 'mysql.bertha.co',
+     user: 'theboysjs_user',
+     password: 'ingot.quick.9artie.morse1.vise2',
+     database: 'theboysjs',
+ 	 connectionLimit: 1
+//      host: process.env.SQL_HOST,
+//      user: process.env.SQL_USER,
+//      password: process.env.SQL_PASS,
+//      database: process.env.SQL_DB,
+//  	 connectionLimit: process.env.POOLS || 2
  	}
  );
 
@@ -117,6 +116,7 @@ io.on('connection', (socket) => {
 					user.language === 'en'
 				}
 
+				data.avatar = user.avatarUrl;
 				var t = translate(data.text, {to: user.language})
 					.then(trans => {
 						let transTexts =  {
