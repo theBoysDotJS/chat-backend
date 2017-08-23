@@ -13,7 +13,7 @@ module.exports = (queryAPI) => {
       username: req.body.username,
       password: req.body.password,
       firstName : req.body.firstName,
-	    lastName : req.body.lastName,
+	  lastName : req.body.lastName,
       language : req.body.language,
       avatarUrl : req.body.avatarUrl
     })
@@ -31,8 +31,8 @@ module.exports = (queryAPI) => {
 	authController.post('/session', (req, res) => {
 		console.log(req.body, 'this is in sessions')
 		queryAPI.createTokenFromCredentials(req.body.username, req.body.password).then(resp => {
-			console.log(resp, 'the response')
-			res.status(201).json({token: resp.token, user: resp.id})
+			console.log(resp, '<<<<<<<<<<<<<<LOGIN RESPONSE')
+			res.status(201).json({token: resp.token, user: resp.id, language: resp.language})
 		}).catch(err => {
 
 			console.log(err.message, 'this is the error')
