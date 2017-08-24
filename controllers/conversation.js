@@ -119,10 +119,8 @@ module.exports = (queryAPI) => {
 
   // add a user/ join a conversation
   conversationController.post('/:id/join', onlyLoggedIn, (req, res) => {
-      queryAPI.joinConversationAllUsers(
-          req.params.id,
-          req.body.user
-      )
+	  console.log(req.params, req.body, '<<<<<<<REQ')
+      queryAPI.joinConversationAllUsers(req.params.id, req.body.userId)
       .then(success => res.status(201).json(success))
       .catch(err => res.status(400).json({
       'error' : "ERROR",
