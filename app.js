@@ -115,7 +115,7 @@ io.on('connection', (socket) => {
 				if(user.language.length !== 2) {
 					user.language === 'en'
 				}
-
+				
 				data.avatar = user.avatarUrl;
 				var t = translate(data.text, {to: user.language})
 					.then(trans => {
