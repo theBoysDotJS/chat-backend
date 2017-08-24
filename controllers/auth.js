@@ -59,7 +59,9 @@ module.exports = (queryAPI) => {
       'error' : "ERROR",
       'message' : 'Failed to delete a session',
       'err_message' :  err.message
-    }));
+    	})
+		);
+	}
   });
 
   // Retrieve current user
