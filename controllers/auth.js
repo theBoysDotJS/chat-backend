@@ -3,6 +3,7 @@ const express = require('express');
 const onlyLoggedIn = require('../lib/only-logged-in');
 
 module.exports = (queryAPI) => {
+
   const authController = express.Router();
 
   // Create a new user (signup)
@@ -15,44 +16,30 @@ module.exports = (queryAPI) => {
 	  lastName : req.body.lastName,
       language : req.body.language,
       avatarUrl : req.body.avatarUrl
-
     })
-    .then(user => res.status(201).json(user))
+    .then(user => {
+        console.log("USER RETURN", user)
+        res.status(201).json(user)
+    })
     .catch((err) => {
-      // console.log();
-
-      res.status(400).json({
-      'error' : "ERROR",
-      'message' : 'Signup Failed',
-      'err_message' :  err.message
-    })
-  }
-  )
+      console.log("CATCH RETURN", err);
+      res.status(400).json(err)
+  	})
   });
 
-  // Create a new session (login)
-  authController.post('/session', (req, res) => {
-	  console.log(req.body, 'this is in sessions')
-		queryAPI.createTokenFromCredentials(
-	      req.body.username,
-	      req.body.password
-	    )
-	    .then(resp => {
-			res.status(201).json({ token: resp.token, user: resp.id })
-		})
-	    .catch(err => res.status(401).json({
-      'error' : "ERROR",
-      'message' : 'Login Failed',
-      'err_message' :  err.message
-    }));
-  });
+	// Create a new session (login)
+	authController.post('/session', (req, res) => {
+		console.log(req.body, 'this is in sessions')
+		queryAPI.createTokenFromCredentials(req.body.username, req.body.password).then(resp => {
+			console.log(resp, '<<<<<<<<<<<<<<LOGIN RESPONSE')
+			res.status(201).json({token: resp.token, user: resp.id, language: resp.language})
+		}).catch(err => {
 
+			console.log(err.message, 'this is the error')
+			res.status(401).json({'error': "ERROR", 'message': 'Login Failed', 'err_message': err.message});
+		});
+	});
 
-  // Delete a session (logout)
-  authController.delete('/session', onlyLoggedIn, (req, res) => {
-	console.log(req.sessionToken, req.body, 'tokens in delete');
-    if (req.sessionToken === req.body.token) {
-      queryAPI.deleteToken(req.body.token)
 
       .then(() => res.status(204).end())
       .catch(err => res.status(400).json({
@@ -75,5 +62,15 @@ module.exports = (queryAPI) => {
     }))
   });
 
+  authController.put('/update', onlyLoggedIn, (req, res) => {
+    console.log("USER ID", req.user.user_id)
+    console.log("NEW LANG", req.body.language)
+
+    queryAPI.changeLanguage(req.user.user_id, req.body.language)
+    .then((result) => res.status(201).json(true))
+    .catch((err) => res.status(400).json(false))
+  })
+
   return authController;
+
 };
