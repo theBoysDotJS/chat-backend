@@ -80,7 +80,7 @@ module.exports = (queryAPI) => {
 	// get a ALL conversations
 	conversationController.get('/', onlyLoggedIn, (req, res) => {
 		// console.log(req.user.user_id, 'this is the user')
-
+		console.log('here I am')
 		var conversationArray = [];
 
 		queryAPI.getAllConversations(req.user.user_id).then(conversations => {
@@ -89,8 +89,10 @@ module.exports = (queryAPI) => {
 				conversationArray.push(convo);
 				stuff.push(queryAPI.getSingleConversationUser(convo.id))
 			})
+			console.log(conversations, "<<<<<<<<<<<WAKKWAKK")
 			return Promise.all(stuff)
 		}).then(users => {
+			console.log(conversationArray, '<<<<<<<<THE ARRAY')
 			conversationArray.map((convo, index) => {
 				convo['users'] = users[index];
 				return convo;
