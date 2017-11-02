@@ -21,39 +21,14 @@ const io = require('socket.io')(http);
 // Data Loader
 const Query = require('./lib/Query');
 
-// Create a connection to the DB
-// const connection = mysql.createPool({
-// 	 host: 'localhost',
-// 	 user: 'root',
-// 	 database: 'chat_box'
-//  }
-//  );
-
-//  // Create a connection to the DB
-// const connection = mysql.createPool({
-//      host: 'us-cdbr-iron-east-05.cleardb.net',
-//      user: 'b537a8dc95ca1e',
-//      password: '6b5c43b1',
-//      database: 'heroku_fd5680f97c93408',
-//  	 connectionLimit: 1
-//  	}
-//  );
-
  // Create a connection to the DB
 const connection = mysql.createPool({
-
-     host: 'mysql.bertha.co',
-     user: 'theboysjs_user',
-     password: 'ingot.quick.9artie.morse1.vise2',
-     database: 'theboysjs',
- 	 connectionLimit: 1
-//      host: process.env.SQL_HOST,
-//      user: process.env.SQL_USER,
-//      password: process.env.SQL_PASS,
-//      database: process.env.SQL_DB,
-//  	 connectionLimit: process.env.POOLS || 2
- 	}
- );
+     host: process.env.SQL_HOST,
+     user: process.env.SQL_USER,
+     password: process.env.SQL_PASS,
+     database: process.env.SQL_DB,
+     connectionLimit: process.env.POOLS || 2
+});
 
 
 const queryAPI = new Query(connection);
@@ -99,17 +74,14 @@ http.listen(process.env.PORT || port, function() {
 
 // Socket.io logic
 io.on('connection', (socket) => {
-	console.log('made socket connection', socket.id);
 	// Handle chat event
 	socket.on('chat', function(data) {
-		console.log('message recieved >>>>>>>>>>>>', data)
 
 		queryAPI.messageReceived(data).then(result => {
 			data["messageId"] = result.insertId
 		})
 
 		queryAPI.getAllUsersInConversation(data.convoId).then(userArr => {
-			console.log('>>>>>>>>>>>>>>>>>', userArr)
 			let promiseArr = new Array()
 			userArr.forEach((user, i) => {
 				if(user.language.length !== 2) {
@@ -129,18 +101,14 @@ io.on('connection', (socket) => {
 					}) // end t
 				promiseArr.push(t)
 			})// language for each
-			// console.log(promiseArr, 'the array of promises')
 			return Promise.all(promiseArr)
 		}) // end userArr then
 		.then(translations => {
-			console.log(translations, 'TRANSLATED STUFF')
 			let textObj = {}
 			translations.map((translation) => {
-				console.log(translation, "$$$$$$$$$$$$")
 				textObj[translation.language] = translation.text
 			})
 			data.text = textObj;
-			console.log(data, '<<<<<<<< the full data object');
 			io.sockets.emit('chat', data);
 		})
 	}) // end socket.on chat
