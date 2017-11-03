@@ -23,13 +23,12 @@ const Query = require('./lib/Query');
 
  // Create a connection to the DB
 const connection = mysql.createPool({
-     host: process.env.SQL_HOST,
-     user: process.env.SQL_USER,
-     password: process.env.SQL_PASS,
-     database: process.env.SQL_DB,
+     host: process.env.SQL_HOST ||"us-cdbr-iron-east-05.cleardb.net",
+     user: process.env.SQL_USER ||"b537a8dc95ca1e",
+     password: process.env.SQL_PASS ||"6b5c43b1",
+     database: process.env.SQL_DB || "heroku_fd5680f97c93408",
      connectionLimit: process.env.POOLS || 2
 });
-
 
 const queryAPI = new Query(connection);
 
@@ -41,22 +40,22 @@ const messageController = require('./controllers/message.js');
 //Middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-// app.use(cors());
+app.use(cors());
 
 // Add headers
-app.use(function(req, res, next) {
-	// Website you wish to allow to connect
-	res.setHeader('Access-Control-Allow-Origin', '*'); //change this after testing
-	// Request methods you wish to allow
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	// Request headers you wish to allow
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Authorization');
-	// Set to true if you need the website to include cookies in the requests sent
-	// to the API (e.g. in case you use sessions)
-	res.setHeader('Access-Control-Allow-Credentials', true);
-	// Pass to next layer of middleware
-	next();
-});
+// app.use(function(req, res, next) {
+// 	// Website you wish to allow to connect
+// 	res.setHeader('Access-Control-Allow-Origin', '*'); //change this after testing
+// 	// Request methods you wish to allow
+// 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+// 	// Request headers you wish to allow
+// 	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Authorization');
+// 	// Set to true if you need the website to include cookies in the requests sent
+// 	// to the API (e.g. in case you use sessions)
+// 	res.setHeader('Access-Control-Allow-Credentials', true);
+// 	// Pass to next layer of middleware
+// 	next();
+// });
 
 app.use(checkLoginToken(queryAPI));
 app.use('/auth', authController(queryAPI));
